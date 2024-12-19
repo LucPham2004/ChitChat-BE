@@ -5,92 +5,51 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.4.0</version>
+		<version>3.4.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>App</groupId>
 	<artifactId>ChitChat</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
 	<name>ChitChat</name>
 	<description>Chat Application for real-time chat using Java Spring Boot</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+	
 	<properties>
 		<java.version>17</java.version>
+    	<spring-cloud.version>2023.0.4</spring-cloud.version>
 	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-mail</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
 
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+            	<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
+	<modules>
+		<module>config-server</module>
+		<module>discovery-server</module>
+		<module>gateway</module>
+		<module>auth-service</module>
+		<module>user-service</module>
+		<module>chat-service</module>
+		<module>notification-service</module>
+	</modules>
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
 
 </project>

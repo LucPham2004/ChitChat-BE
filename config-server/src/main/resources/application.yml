@@ -1,0 +1,19 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/your-repo/chat-config-repo
+          default-label: main
+  profiles:
+    active: git
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
