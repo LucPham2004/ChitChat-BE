@@ -16,6 +16,7 @@ import ChitChat.user_service.dto.request.UserUpdateRequest;
 import ChitChat.user_service.dto.response.ApiResponse;
 import ChitChat.user_service.dto.response.UserDTO;
 import ChitChat.user_service.dto.response.UserResponse;
+import ChitChat.user_service.entity.User;
 import ChitChat.user_service.mapper.UserMapper;
 import ChitChat.user_service.service.UserService;
 
@@ -71,6 +72,17 @@ public class UserController {
                                 .code(1000)
                                 .message("Get user with ID " + id + " successfully!")
                                 .result(userMapper.toUserResponse(dbUser))
+                                .build();
+        }
+
+        // Get User by id
+        @GetMapping("/seach")
+        public ApiResponse<User> findUserByUsernameOrEmailOrPhone(@RequestParam String login) {
+                var dbUser = this.userService.getUserByEmailOrUsernameOrPhone(login);
+                return ApiResponse.<User>builder()
+                                .code(1000)
+                                .message("Get user with login param " + login + " successfully!")
+                                .result(dbUser)
                                 .build();
         }
 
