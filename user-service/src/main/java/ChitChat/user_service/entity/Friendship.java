@@ -2,6 +2,7 @@ package ChitChat.user_service.entity;
 
 import java.time.Instant;
 
+import ChitChat.user_service.enums.FriendshipStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

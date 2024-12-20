@@ -3,6 +3,7 @@ package ChitChat.user_service.entity;
 import java.time.Instant;
 import java.util.Set;
 
+import ChitChat.user_service.enums.Gender;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

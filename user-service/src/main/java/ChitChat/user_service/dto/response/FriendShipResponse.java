@@ -1,7 +1,6 @@
 package ChitChat.user_service.dto.response;
 
-import ChitChat.user_service.entity.FriendshipStatus;
-
+import ChitChat.user_service.enums.FriendshipStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

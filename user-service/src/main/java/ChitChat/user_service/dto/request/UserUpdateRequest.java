@@ -2,8 +2,7 @@ package ChitChat.user_service.dto.request;
 
 import java.time.Instant;
 
-import ChitChat.user_service.entity.Gender;
-
+import ChitChat.user_service.enums.Gender;
 import lombok.Data;
 
 @Data

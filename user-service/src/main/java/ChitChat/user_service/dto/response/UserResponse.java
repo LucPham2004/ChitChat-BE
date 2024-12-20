@@ -2,8 +2,7 @@ package ChitChat.user_service.dto.response;
 
 import java.time.Instant;
 
-import ChitChat.user_service.entity.Gender;
-
+import ChitChat.user_service.enums.Gender;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,7 +31,6 @@ public class UserResponse {
      
      Gender gender;
 
-     int groupNum;
      int friendNum;
      Long mutualFriendsNum;
 }
