@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: discovery-server
+  cloud:
+    config:
+      uri: http://config-server:8888
+      fail-fast: true
 
 eureka:
   client:
