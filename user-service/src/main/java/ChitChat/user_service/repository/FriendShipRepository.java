@@ -9,7 +9,7 @@ import ChitChat.user_service.entity.Friendship;
 
 
 @Repository
-public interface FriendShipRepository extends PagingAndSortingRepository<Friendship, Long> {
+public interface FriendshipRepository extends PagingAndSortingRepository<Friendship, Long> {
     Friendship save(Friendship friendShip);
 
     void delete(Friendship friendship);
