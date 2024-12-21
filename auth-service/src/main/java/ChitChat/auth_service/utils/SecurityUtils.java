@@ -38,13 +38,13 @@ public class SecurityUtils {
     public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS512;
     private final JwtEncoder jwtEncoder;
 
-    @Value("${me_social.jwt.base64-secret}")
+    @Value("${chitchat.jwt.base64-secret}")
     private String jwtKey;
 
-    @Value("${me_social.jwt.access-token-validity-in-seconds}")
+    @Value("${chitchat.jwt.access-token-validity-in-seconds}")
     private Long accessTokenExpiration;
 
-    @Value("${me_social.jwt.refresh-token-validity-in-seconds}")
+    @Value("${chitchat.jwt.refresh-token-validity-in-seconds}")
     public Long refreshTokenExpiration;
 
     private SecretKey getSecretKey() {

@@ -8,7 +8,7 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/your-repo/chat-config-repo
+          uri: https://github.com/LucPham2004/ChitChat-config-repo.git
           default-label: main
   profiles:
     active: git

@@ -32,7 +32,7 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    @Value("${me_social.jwt.base64-secret}")
+    @Value("${chitchat.jwt.base64-secret}")
     private String jwtKey;
 
     String[] whiteList = {};
