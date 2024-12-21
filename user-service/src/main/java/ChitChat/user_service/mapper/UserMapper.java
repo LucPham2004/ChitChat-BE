@@ -3,6 +3,7 @@ package ChitChat.user_service.mapper;
 import org.springframework.stereotype.Component;
 
 import ChitChat.user_service.dto.request.UserCreationRequest;
+import ChitChat.user_service.dto.response.UserAuthResponse;
 import ChitChat.user_service.dto.response.UserDTO;
 import ChitChat.user_service.dto.response.UserResponse;
 import ChitChat.user_service.entity.User;
@@ -60,6 +61,17 @@ public class UserMapper {
         userDTO.setFriendNum(userRepository.countFriends(user.getId()));
 
         return userDTO;
+    }
+
+    public UserAuthResponse toUserAuthResponse(User user) {
+        UserAuthResponse userResponse = new UserAuthResponse();
+        userResponse.setId(user.getId());
+        userResponse.setUsername(user.getUsername());
+        userResponse.setEmail(user.getEmail());
+        userResponse.setPhone(user.getPhone());
+        userResponse.setPassword(user.getPassword());
+
+        return userResponse;
     }
 
 }

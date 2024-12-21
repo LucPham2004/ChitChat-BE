@@ -12,11 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ChitChat.user_service.dto.request.UserCreationRequest;
+import ChitChat.user_service.dto.request.UserUpdateOtpRequest;
 import ChitChat.user_service.dto.request.UserUpdateRequest;
 import ChitChat.user_service.dto.response.ApiResponse;
+import ChitChat.user_service.dto.response.UserAuthResponse;
 import ChitChat.user_service.dto.response.UserDTO;
 import ChitChat.user_service.dto.response.UserResponse;
-import ChitChat.user_service.entity.User;
 import ChitChat.user_service.mapper.UserMapper;
 import ChitChat.user_service.service.UserService;
 
@@ -37,18 +38,6 @@ public class UserController {
                 return ApiResponse.<UserResponse>builder()
                                 .code(1000)
                                 .message("Create user successfully!")
-                                .result(userMapper.toUserResponse(user))
-                                .build();
-        }
-
-        // PUT
-        @PutMapping("/update")
-        public ApiResponse<UserResponse> updateUser(@RequestBody UserUpdateRequest reqUser) {
-                var user = this.userService.updateUser(reqUser);
-
-                return ApiResponse.<UserResponse>builder()
-                                .code(1000)
-                                .message("Update user with ID " + reqUser.getId() + " successfully")
                                 .result(userMapper.toUserResponse(user))
                                 .build();
         }
@@ -77,12 +66,24 @@ public class UserController {
 
         // Get User by id
         @GetMapping("/seach")
-        public ApiResponse<User> findUserByUsernameOrEmailOrPhone(@RequestParam String login) {
-                var dbUser = this.userService.getUserByEmailOrUsernameOrPhone(login);
-                return ApiResponse.<User>builder()
+        public ApiResponse<UserAuthResponse> handleGetUserByUsernameOrEmailOrPhone(@RequestParam String loginInput) {
+                var dbUser = this.userService.handleGetUserByUsernameOrEmailOrPhone(loginInput);
+                return ApiResponse.<UserAuthResponse>builder()
+                                .code(1000)
+                                .message("Get user with login param " + loginInput + " successfully!")
+                                .result(userMapper.toUserAuthResponse(dbUser))
+                                .build();
+        }
+
+        @GetMapping("/seach&token")
+        public ApiResponse<UserAuthResponse> getUserByRefreshTokenAndEmailOrUsernameOrPhone(
+                        @RequestParam String refresh_token, 
+                        @RequestParam String login) {
+                var dbUser = this.userService.getUserByRefreshTokenAndEmailOrUsernameOrPhone(refresh_token, login);
+                return ApiResponse.<UserAuthResponse>builder()
                                 .code(1000)
                                 .message("Get user with login param " + login + " successfully!")
-                                .result(dbUser)
+                                .result(userMapper.toUserAuthResponse(dbUser))
                                 .build();
         }
 
@@ -137,6 +138,51 @@ public class UserController {
                                 .code(1000)
                                 .message("Get suggested friends of the user with ID " + userId + " successfully!")
                                 .result(friends)
+                                .build();
+        }
+
+        // PUT
+        @PutMapping("/update")
+        public ApiResponse<UserResponse> updateUser(@RequestBody UserUpdateRequest reqUser) {
+                var user = this.userService.updateUser(reqUser);
+
+                return ApiResponse.<UserResponse>builder()
+                                .code(1000)
+                                .message("Update user with ID " + reqUser.getId() + " successfully")
+                                .result(userMapper.toUserResponse(user))
+                                .build();
+        }
+
+        @PutMapping("/update/otp")
+        public ApiResponse<UserResponse> updateUserOtp(@RequestBody UserUpdateOtpRequest reqUser) {
+                var user = this.userService.updateUserOtp(reqUser);
+
+                return ApiResponse.<UserResponse>builder()
+                                .code(1000)
+                                .message("Update user with ID " + reqUser.getId() + " successfully")
+                                .result(userMapper.toUserResponse(user))
+                                .build();
+        }
+
+        @PutMapping("/update/token")
+        public ApiResponse<Void> updateUserToken(
+                        @RequestParam String token, 
+                        @RequestParam String emailUsernamePhone) {
+                this.userService.updateUserToken(token, emailUsernamePhone);
+
+                return ApiResponse.<Void>builder()
+                                .code(1000)
+                                .message("Update user's token with login value: " + emailUsernamePhone + " successfully")
+                                .build();
+        }
+
+        @PostMapping("/verify-otp")
+        public ApiResponse<Boolean> verifyOtp(@RequestBody Long userId, String otp) {
+                var isVerified = this.userService.verifyOtp(userId, otp);
+                return ApiResponse.<Boolean>builder()
+                                .code(1000)
+                                .message("Create user successfully!")
+                                .result(isVerified)
                                 .build();
         }
 }

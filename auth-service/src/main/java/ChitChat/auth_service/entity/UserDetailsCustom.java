@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import ChitChat.auth_service.dto.response.UserResponse;
+import ChitChat.auth_service.dto.response.UserAuthResponse;
 import ChitChat.auth_service.exception.AppException;
 import ChitChat.auth_service.exception.ErrorCode;
 import ChitChat.auth_service.repository.RoleRepository;
@@ -29,7 +29,7 @@ public class UserDetailsCustom implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         try {
-			UserResponse userDto = userServiceClient.findUserByUsernameOrEmailOrPhone(login);
+			UserAuthResponse userDto = userServiceClient.handleGetUserByUsernameOrEmailOrPhone(login).getResult();
 
 			Set<SimpleGrantedAuthority> authorities = userDto.getAuthorityIds().stream()
 				.map(roleRepository::findById)

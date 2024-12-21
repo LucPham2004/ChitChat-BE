@@ -18,12 +18,13 @@ public enum ErrorCode {
 
     ENTITY_EXISTED(1002, "Entity existed!", HttpStatus.BAD_REQUEST),
 
-    ENTITY_NOT_EXISTED(1005, "Entity not existed", HttpStatus.NOT_FOUND),
+    ENTITY_NOT_EXISTED(1003, "Entity not existed", HttpStatus.NOT_FOUND),
 
-    NO_REFRESH_TOKEN(1010, "You don't have refresh token in cookies", HttpStatus.BAD_REQUEST),
+    NO_REFRESH_TOKEN(1004, "You don't have refresh token in cookies", HttpStatus.BAD_REQUEST),
 
-    INVALID_ACCESS_TOKEN(1011, "Your access token is not valid", HttpStatus.BAD_REQUEST), 
+    INVALID_ACCESS_TOKEN(1005, "Your access token is not valid", HttpStatus.BAD_REQUEST), 
 
+    ERROR_EMAIL(1006, "Some error occur when sending email", HttpStatus.INTERNAL_SERVER_ERROR), 
     ;
 
     private int code;

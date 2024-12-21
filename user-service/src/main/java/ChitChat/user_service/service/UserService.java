@@ -1,5 +1,7 @@
 package ChitChat.user_service.service;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ChitChat.user_service.dto.request.UserCreationRequest;
+import ChitChat.user_service.dto.request.UserUpdateOtpRequest;
 import ChitChat.user_service.dto.request.UserUpdateRequest;
 import ChitChat.user_service.dto.response.UserDTO;
 import ChitChat.user_service.entity.User;
@@ -96,23 +99,6 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
-    // Get User by username/email/phone
-    public User handleGetUserByUsernameOrEmailOrPhone(String loginInput) {
-        Optional<User> optionalUser = this.userRepository.findByEmail(loginInput);
-        log.info("login input: {}", loginInput);
-        if (optionalUser.isEmpty()) {
-            optionalUser = userRepository.findByUsername(loginInput);
-        }
-        if (optionalUser.isEmpty()) {
-            optionalUser = userRepository.findByPhone(loginInput);
-        }
-        if (optionalUser.isEmpty()) {
-            throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
-        }
-
-        return optionalUser.get();
-    }
-
     // POST
     // Create user
     public User createUser(UserCreationRequest request) {
@@ -166,6 +152,26 @@ public class UserService {
         return this.userRepository.save(dbUser);
     }
 
+    @Transactional
+    public User updateUserOtp(UserUpdateOtpRequest reqUser) {
+        User dbUser = this.findById(reqUser.getId()).get();
+
+        if (reqUser.getOtp() != null && !reqUser.getOtp().isEmpty()
+                && !reqUser.getOtp().equals(dbUser.getOtp())) {
+            dbUser.setOtp(reqUser.getOtp());
+        }
+
+        if (reqUser.getOtpGeneratedTime() != null && !reqUser.getOtpGeneratedTime().equals(dbUser.getOtpGeneratedTime())) {
+            dbUser.setOtpGeneratedTime(reqUser.getOtpGeneratedTime());
+        }
+
+        if (reqUser.isActive() != dbUser.isActive()) {
+            dbUser.setActive(reqUser.isActive());
+        }
+        
+        return this.userRepository.save(dbUser);
+    }
+
     // DELETE
     public void deleteUserById(Long id) {
         User dbUser = this.findById(id)
@@ -196,9 +202,26 @@ public class UserService {
         }
     }
 
-    public User getUserByEmailOrUsernameOrPhone(String emailUsernamePhone) {
-        return this.userRepository.findByEmailOrUsernameOrPhone(emailUsernamePhone)
+    public User getUserByRefreshTokenAndEmailOrUsernameOrPhone(String token, String emailUsernamePhone) {
+        return this.userRepository.findByRefreshTokenAndEmailOrUsernameOrPhone(token, emailUsernamePhone)
                 .orElseThrow(() -> new AppException(ErrorCode.ENTITY_NOT_EXISTED));
+    }
+
+    // Get User by username/email/phone
+    public User handleGetUserByUsernameOrEmailOrPhone(String loginInput) {
+        Optional<User> optionalUser = this.userRepository.findByEmail(loginInput);
+        log.info("login input: {}", loginInput);
+        if (optionalUser.isEmpty()) {
+            optionalUser = userRepository.findByUsername(loginInput);
+        }
+        if (optionalUser.isEmpty()) {
+            optionalUser = userRepository.findByPhone(loginInput);
+        }
+        if (optionalUser.isEmpty()) {
+            throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
+        }
+
+        return optionalUser.get();
     }
 
     public User getUserByEmail(String email) {
@@ -209,15 +232,17 @@ public class UserService {
         return optionalUser.get();
     }
 
-    // public boolean verifyOtp(User user, String otp) {
-    //     if (user.getOtp().equals(otp) && Duration.between(user.getOtpGeneratedTime(), Instant.now()).getSeconds() < 60) {
-    //         user.setOtp(otp); // Clear OTP after successful verification
-    //         userRepository.save(user);
-    //         return true;
-    //     } else if (!user.getOtp().equals(otp)) {
-    //         throw new AppException(ErrorCode.INVALID_OTP);
-    //     } else {
-    //         throw new AppException(ErrorCode.EXPIRED_OTP);
-    //     }
-    // }
+    public boolean verifyOtp(Long userId, String otp) {
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new AppException(ErrorCode.ENTITY_NOT_EXISTED));
+        if (user.getOtp().equals(otp) && Duration.between(user.getOtpGeneratedTime(), Instant.now()).getSeconds() < 60) {
+            user.setOtp(otp); // Clear OTP after successful verification
+            userRepository.save(user);
+            return true;
+        } else if (!user.getOtp().equals(otp)) {
+            throw new AppException(ErrorCode.INVALID_OTP);
+        } else {
+            throw new AppException(ErrorCode.EXPIRED_OTP);
+        }
+    }
 }

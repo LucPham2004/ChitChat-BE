@@ -1,8 +1,7 @@
 package ChitChat.auth_service.dto.response;
 
-import java.time.Instant;
+import java.util.Set;
 
-import ChitChat.auth_service.entity.Gender;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,22 +14,14 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level=AccessLevel.PRIVATE)
-public class UserResponse {
+public class UserAuthResponse {
      Long id;
 
      String username;
      String email;
-     String firstName;
-     String lastName;
+     String password;
+
+     Set<String> authorityIds;
+
      String phone;
-     String avatarUrl;
-
-     Instant dob;
-     Instant createdAt;
-     Instant updatedAt;
-     
-     Gender gender;
-
-     int friendNum;
-     Long mutualFriendsNum;
 }
