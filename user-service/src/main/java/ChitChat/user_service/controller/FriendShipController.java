@@ -25,14 +25,14 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FriendshipController {
 
-    FriendshipService friendShipService;
+    FriendshipService friendshipService;
     FriendshipMapper mapper;
 
     @GetMapping("/get/status")
     public ApiResponse<FriendShipResponse> getFriendStatus(
 					@RequestParam Long senderId, 
 					@RequestParam Long recipientId) {
-            var response = this.friendShipService.getFriendStatus(senderId, recipientId);
+            var response = this.friendshipService.getFriendStatus(senderId, recipientId);
             if(response == null) {
                 return ApiResponse.<FriendShipResponse>builder()
                             .code(1000)
@@ -51,7 +51,7 @@ public class FriendshipController {
     public ApiResponse<FriendShipResponse> sendFriendRequest(
 					@RequestParam Long senderId, 
 					@RequestParam Long recipientId) {
-            var response = this.friendShipService.sendFriendRequest(senderId, recipientId);
+            var response = this.friendshipService.sendFriendRequest(senderId, recipientId);
             return ApiResponse.<FriendShipResponse>builder()
                             .code(1000)
                             .message("Send friend request from user with ID: " + senderId + 
@@ -62,7 +62,7 @@ public class FriendshipController {
 
     @DeleteMapping("/delete/{id}")
     public ApiResponse<Void> deleteFriendShip(@PathVariable Long id) { 
-            this.friendShipService.deleteFriendShip(id);
+            this.friendshipService.deleteFriendShip(id);
             return ApiResponse.<Void>builder()
                             .code(1000)
                             .message("Delete friendship successfully!")
@@ -73,7 +73,7 @@ public class FriendshipController {
     public ApiResponse<FriendShipResponse> editFriendShipStatus(
 					@RequestParam Long id, 
 					@RequestParam FriendshipStatus status) {
-        	var response = this.friendShipService.editFriendShipStatus(id, status);
+        	var response = this.friendshipService.editFriendShipStatus(id, status);
             return ApiResponse.<FriendShipResponse>builder()
                             .code(1000)
                             .message("Edit friendship status successfully!")

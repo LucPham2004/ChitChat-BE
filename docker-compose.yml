@@ -35,60 +35,152 @@ services:
       - chat-network
 
   auth-service:
+    image: chitchat-auth-service-image
     build:
       context: ./auth-service
     container_name: auth-service
     ports:
       - "8081:8081"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-auth:3306/authdb
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
     depends_on:
       - discovery-server
       - config-server
+      - mysql-auth
     networks:
       - chat-network
 
   user-service:
+    image: chitchat-user-service-image
     build:
       context: ./user-service
     container_name: user-service
     ports:
       - "8082:8082"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-user:3306/userdb
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
     depends_on:
       - discovery-server
       - config-server
+      - mysql-user
     networks:
       - chat-network
 
   chat-service:
+    image: chitchat-chat-service-image
     build:
       context: ./chat-service
     container_name: chat-service
     ports:
       - "8083:8083"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-chat:3306/chatdb
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
     depends_on:
       - discovery-server
       - config-server
+      - mysql-chat
     networks:
       - chat-network
 
   notification-service:
+    image: chitchat-notification-service-image
     build:
       context: ./notification-service
     container_name: notification-service
     ports:
       - "8084:8084"
     environment:
-      - SPRING_PROFILES_ACTIVE=docker
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-notification:3306/notificationdb
+      SPRING_DATASOURCE_USERNAME: myuser
+      SPRING_DATASOURCE_PASSWORD: mypassword
     depends_on:
       - discovery-server
       - config-server
+      - mysql-notification
     networks:
       - chat-network
+
+########################################################----- MYSQL DATABASES-----###############################################
+  # MySQL for auth-service
+  mysql-auth:
+    image: mysql:8.0.36
+    container_name: mysql-auth
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: authdb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-auth-data:/var/lib/mysql
+    networks:
+      - chat-network
+
+  # MySQL for user-service
+  mysql-user:
+    image: mysql:8.0.36
+    container_name: mysql-user
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: userdb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql-user-data:/var/lib/mysql
+    networks:
+      - chat-network
+
+  # MySQL for chat-service
+  mysql-chat:
+    image: mysql:8.0.36
+    container_name: mysql-chat
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: chatdb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql-chat-data:/var/lib/mysql
+    networks:
+      - chat-network
+
+  # MySQL for notification-service
+  mysql-notification:
+    image: mysql:8.0.36
+    container_name: mysql-notification
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: notificationdb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    ports:
+      - "3310:3306"
+    volumes:
+      - mysql-notification-data:/var/lib/mysql
+    networks:
+      - chat-network
+
+
+volumes:
+  mysql-auth-data:
+  mysql-user-data:
+  mysql-chat-data:
+  mysql-notification-data:
 
 networks:
   chat-network:

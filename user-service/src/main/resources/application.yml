@@ -4,14 +4,16 @@ server:
 spring:
   application:
     name: user-service
-  cloud:
-    config:
-      uri: http://config-server:8888
-      fail-fast: true
+#   cloud:
+#     config:
+#       uri: http://config-server:8888
+#       fail-fast: true
+#   config:
+#     import: optional:configserver:http://config-server:8888
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://discovery-server:8761/eureka/
-    register-with-eureka: true
-    fetch-registry: true
+# eureka:
+#   client:
+#     service-url:
+#       defaultZone: http://discovery-server:8761/eureka/
+#     register-with-eureka: true
+#     fetch-registry: true

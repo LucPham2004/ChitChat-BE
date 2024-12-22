@@ -47,9 +47,9 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
      @Query("""
                SELECT u FROM User u
                JOIN Friendship f
-               ON (f.requester = u OR f.requestReceiver = u)
-               WHERE (f.requester.id = :userId OR f.requestReceiver.id = :userId)
-               AND f.status = 'ACCEPTED'
+               ON (f.sender = u OR f.recipient = u)
+               WHERE (f.sender.id = :userId OR f.recipient.id = :userId)
+               AND f.status = 'Accepted'
                AND u.id != :userId
                """)
      Page<User> findFriends(@Param("userId") Long userId, Pageable pageable);
@@ -57,9 +57,9 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
      @Query("""
                SELECT COUNT(u) FROM User u
                JOIN Friendship f
-               ON (f.requester = u OR f.requestReceiver = u)
-               WHERE (f.requester.id = :userId OR f.requestReceiver.id = :userId)
-               AND f.status = 'ACCEPTED'
+               ON (f.sender = u OR f.recipient = u)
+               WHERE (f.sender.id = :userId OR f.recipient.id = :userId)
+               AND f.status = 'Accepted'
                AND u.id != :userId
                """)
      int countFriends(@Param("userId") Long userId);
@@ -69,23 +69,23 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
 		SELECT u FROM User u
 		WHERE u.id <> :userId
 		AND u.id NOT IN (
-			SELECT f.requestReceiver.id FROM Friendship f WHERE f.requester.id = :userId
+			SELECT f.recipient.id FROM Friendship f WHERE f.sender.id = :userId
 			UNION
-			SELECT f2.requester.id FROM Friendship f2 WHERE f2.requestReceiver.id = :userId
+			SELECT f2.sender.id FROM Friendship f2 WHERE f2.recipient.id = :userId
 		)
 		AND u.id IN (
-			SELECT f3.requestReceiver.id FROM Friendship f3 
-			WHERE f3.requester.id IN (
-				SELECT f4.requestReceiver.id FROM Friendship f4 WHERE f4.requester.id = :userId
+			SELECT f3.recipient.id FROM Friendship f3 
+			WHERE f3.sender.id IN (
+				SELECT f4.recipient.id FROM Friendship f4 WHERE f4.sender.id = :userId
 				UNION
-				SELECT f5.requester.id FROM Friendship f5 WHERE f5.requestReceiver.id = :userId
+				SELECT f5.sender.id FROM Friendship f5 WHERE f5.recipient.id = :userId
 			)
 			UNION
-			SELECT f6.requester.id FROM Friendship f6 
-			WHERE f6.requestReceiver.id IN (
-				SELECT f7.requestReceiver.id FROM Friendship f7 WHERE f7.requester.id = :userId
+			SELECT f6.sender.id FROM Friendship f6 
+			WHERE f6.recipient.id IN (
+				SELECT f7.recipient.id FROM Friendship f7 WHERE f7.sender.id = :userId
 				UNION
-				SELECT f8.requester.id FROM Friendship f8 WHERE f8.requestReceiver.id = :userId
+				SELECT f8.sender.id FROM Friendship f8 WHERE f8.recipient.id = :userId
 			)
 		)
 		GROUP BY u.id
@@ -96,29 +96,29 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
      // 2 User's mutual friends
      @Query("""
                SELECT u FROM User u WHERE u.id IN
-               (SELECT f.requestReceiver.id FROM Friendship f
-               WHERE f.requester.id = :userAId AND f.requestReceiver.id IN
-               (SELECT f2.requestReceiver.id FROM Friendship f2 WHERE f2.requester.id = :userBId))
+               (SELECT f.recipient.id FROM Friendship f
+               WHERE f.sender.id = :userAId AND f.recipient.id IN
+               (SELECT f2.recipient.id FROM Friendship f2 WHERE f2.sender.id = :userBId))
                OR u.id IN
-               (SELECT f3.requester.id FROM Friendship f3
-               WHERE f3.requestReceiver.id = :userAId AND f3.requester.id IN
-               (SELECT f4.requester.id FROM Friendship f4 WHERE f4.requestReceiver.id = :userBId))
+               (SELECT f3.sender.id FROM Friendship f3
+               WHERE f3.recipient.id = :userAId AND f3.sender.id IN
+               (SELECT f4.sender.id FROM Friendship f4 WHERE f4.recipient.id = :userBId))
                """)
      Page<User> findMutualFriends(@Param("userAId") Long userAId, @Param("userBId") Long userBId, Pageable pageable);
 
      @Query("""
                SELECT COUNT(f) FROM Friendship f
-               WHERE (f.requester.id = :userAId AND f.requestReceiver.id IN
-               (SELECT f2.requestReceiver.id FROM Friendship f2 WHERE f2.requester.id = :userBId))
-               OR (f.requestReceiver.id = :userAId AND f.requester.id IN
-               (SELECT f3.requester.id FROM Friendship f3 WHERE f3.requestReceiver.id = :userBId))
+               WHERE (f.sender.id = :userAId AND f.recipient.id IN
+               (SELECT f2.recipient.id FROM Friendship f2 WHERE f2.sender.id = :userBId))
+               OR (f.recipient.id = :userAId AND f.sender.id IN
+               (SELECT f3.sender.id FROM Friendship f3 WHERE f3.recipient.id = :userBId))
                """)
      int countMutualFriends(@Param("userAId") Long userAId, @Param("userBId") Long userBId);
 
      @Query("""
                SELECT u.id, COUNT(f) FROM Friendship f
-               JOIN User u ON (f.requester.id = :userId AND f.requestReceiver.id IN :memberIds
-               OR f.requestReceiver.id = :userId AND f.requester.id IN :memberIds)
+               JOIN User u ON (f.sender.id = :userId AND f.recipient.id IN :memberIds
+               OR f.recipient.id = :userId AND f.sender.id IN :memberIds)
                GROUP BY u.id
                """)
      Map<Long, Long> countMutualFriendsForUsers(@Param("userId") Long userId,

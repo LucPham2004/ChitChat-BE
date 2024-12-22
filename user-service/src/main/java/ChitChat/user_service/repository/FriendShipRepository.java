@@ -20,10 +20,10 @@ public interface FriendshipRepository extends PagingAndSortingRepository<Friends
 
     @Query("""
            SELECT f FROM  Friendship f 
-           WHERE ((f.requester.id = :requesterId AND f.requestReceiver.id = :receiverId) OR
-                (f.requester.id = :receiverId AND f.requestReceiver.id = :requesterId))
+           WHERE ((f.sender.id = :senderId AND f.recipient.id = :receiverId) OR
+                (f.sender.id = :receiverId AND f.recipient.id = :senderId))
            """)
-    Friendship findBy2UserIds(Long requesterId, Long receiverId);
+    Friendship findBy2UserIds(Long senderId, Long receiverId);
 
     @Query("""
             SELECT COUNT(f) FROM Friendship f
