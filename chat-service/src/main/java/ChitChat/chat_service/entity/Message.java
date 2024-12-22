@@ -61,7 +61,7 @@ public class Message {
 
     @OneToMany(mappedBy = "message", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "message_reactions")
-    private Set<MessageEmojiReaction> reactions;
+    private Set<MessageReaction> reactions;
 
     @OneToMany(mappedBy = "message", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "message_tags")
