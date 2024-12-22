@@ -15,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 public class ChatRequest {
     Long id;
     Long senderId;
-    Long receiverId;
+    Long recipientId;
     String content;
     String url;
 }

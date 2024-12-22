@@ -23,8 +23,8 @@ public class MessageReactionService {
     MessageRepository messageRepository;
     UserServiceClient userServiceClient;
 
-    // Get Message MessageReaction count
-    public int getMessageMessageReactionCount(Long MessageId) {
+    // Get Message Reaction count
+    public int getMessageReactionCount(Long MessageId) {
         return messageReactionRepository.countByMessageId(MessageId);
     }
 
