@@ -102,7 +102,8 @@ public class User {
     // Message-Reaction One-to-Many
     private Set<Long> messageReactionIds;
 
-
+    // Notification One-to-Many
+    private Set<Long> notificationIds;
 
     @PrePersist
     public void handleBeforeCreate() {
