@@ -1,17 +1,8 @@
 server:
-  port: 8087
+  port: 8084
 
 spring:
   application:
     name: notification-service
-  cloud:
-    config:
-      uri: http://config-server:8888
-      fail-fast: true
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://discovery-server:8761/eureka/
-    register-with-eureka: true
-    fetch-registry: true
+

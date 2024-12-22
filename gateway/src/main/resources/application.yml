@@ -6,33 +6,23 @@ spring:
     name: gateway
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
       routes:
         - id: auth-service
-          uri: lb://auth-service
+          uri: http://auth-service:8081
           predicates:
             - Path=/auth/**
         
         - id: user-service
-          uri: lb://user-service
+          uri: http://user-service:8082
           predicates:
             - Path=/users/**
         
         - id: chat-service
-          uri: lb://chat-service
+          uri: http://chat-service:8083
           predicates:
             - Path=/chat/**
         
         - id: notification-service
-          uri: lb://notification-service
+          uri: http://notification-service:8084
           predicates:
             - Path=/notification/**
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://discovery-server:8761/eureka/
-      register-with-eureka: true
-      fetch-registry: true

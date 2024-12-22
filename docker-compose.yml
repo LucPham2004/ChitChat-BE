@@ -1,26 +1,4 @@
 services:
-  config-server:
-    build:
-      context: ./config-server
-    container_name: config-server
-    ports:
-      - "8888:8888"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    networks:
-      - chat-network
-
-  discovery-server:
-    build:
-      context: ./discovery-server
-    container_name: discovery-server
-    ports:
-      - "8761:8761"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-    networks:
-      - chat-network
-
   gateway:
     build:
       context: ./gateway
@@ -30,7 +8,10 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
-      - discovery-server
+      - auth-service
+      - user-service
+      - chat-service
+      - notification-service
     networks:
       - chat-network
 
@@ -46,8 +27,6 @@ services:
       SPRING_DATASOURCE_USERNAME: myuser
       SPRING_DATASOURCE_PASSWORD: mypassword
     depends_on:
-      - discovery-server
-      - config-server
       - mysql-auth
     networks:
       - chat-network
@@ -64,8 +43,6 @@ services:
       SPRING_DATASOURCE_USERNAME: myuser
       SPRING_DATASOURCE_PASSWORD: mypassword
     depends_on:
-      - discovery-server
-      - config-server
       - mysql-user
     networks:
       - chat-network
@@ -82,8 +59,6 @@ services:
       SPRING_DATASOURCE_USERNAME: myuser
       SPRING_DATASOURCE_PASSWORD: mypassword
     depends_on:
-      - discovery-server
-      - config-server
       - mysql-chat
     networks:
       - chat-network
@@ -100,8 +75,6 @@ services:
       SPRING_DATASOURCE_USERNAME: myuser
       SPRING_DATASOURCE_PASSWORD: mypassword
     depends_on:
-      - discovery-server
-      - config-server
       - mysql-notification
     networks:
       - chat-network
