@@ -1,6 +1,6 @@
-package ChitChat.chat_service.dto.response;
+package ChitChat.chat_service.dto;
 
-import java.time.LocalDateTime;
+import java.util.Set;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,13 +14,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level=AccessLevel.PRIVATE)
-public class ChatResponse {
-    Long id;
-    Long senderId;
-    Long recipientId;
-    String content;
-    String url;
-    Boolean isRead;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+public class UserMessageDTO {
+    Long userId;
+    
+    Set<Long> conversationIds;
+    Set<Long> messageIds;
+    Set<Long> messageReactionIds;
 }

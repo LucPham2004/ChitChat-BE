@@ -19,7 +19,7 @@ public interface MediaRepository extends PagingAndSortingRepository<Media, Strin
 
     boolean existsById(String id);
 
-    Page<Media> findByPostId(Long postId, Pageable pageable);
+    Page<Media> findByMessageId(Long messageId, Pageable pageable);
 
-    int countByPostId(Long id);
+    int countByMessageId(Long id);
 }

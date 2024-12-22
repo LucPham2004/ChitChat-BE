@@ -99,8 +99,8 @@ public class User {
     // Message One-to-Many
     private Set<Long> messageIds;
 
-    // Message-Emoji-Reaction One-to-Many
-    private Set<Long> messageEmojiReactionIds;
+    // Message-Reaction One-to-Many
+    private Set<Long> messageReactionIds;
 
 
 
