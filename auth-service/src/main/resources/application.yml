@@ -15,3 +15,9 @@ spring:
 #       defaultZone: http://discovery-server:8761/eureka/
 #     register-with-eureka: true
 #     fetch-registry: true
+
+chitchat:
+  jwt:
+    base64-secret: cHJldmlvdXNjb25zdGFudGx5ZGl2aWRlYmFzZXBsYWludHJhdmVsZGlzaHdyYXBwZWQ=
+    access-token-validity-in-seconds: 86400
+    refresh-token-validity-in-seconds: 86400
