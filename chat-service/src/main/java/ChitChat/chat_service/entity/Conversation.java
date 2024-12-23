@@ -38,6 +38,16 @@ public class Conversation {
 
     private String description;
 
+    private String color;
+
+    @Column(name = "avatar_public_id")
+    private String avatarPublicId;
+
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
+    private String emoji;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     
@@ -57,10 +67,6 @@ public class Conversation {
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "conversation_lastMessage")
     private Message lastMessage;
-
-    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference(value = "conversation_lastReadMessage")
-    private Message lastReadMessage;
 
     // Flags
 

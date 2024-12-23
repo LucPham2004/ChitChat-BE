@@ -16,9 +16,9 @@ public interface ConversationRepository extends PagingAndSortingRepository<Conve
 
     void delete(Conversation conversation);
 
-    Optional<Conversation> findById(String id);
+    Optional<Conversation> findById(Long id);
 
-    boolean existsById(String id);
+    boolean existsById(Long id);
 
     Page<Conversation> findByParticipantIds(Long userId, Pageable pageable);
     
