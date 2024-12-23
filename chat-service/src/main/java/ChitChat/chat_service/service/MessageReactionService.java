@@ -39,7 +39,7 @@ public class MessageReactionService {
         if (MessageReaction == null) {
             MessageReaction = new MessageReaction();
             MessageReaction.setUserId(userId);
-            MessageReaction.setMessage(messageRepository.findById(MessageId));
+            MessageReaction.setMessage(messageRepository.findById(MessageId).get());
             MessageReaction.setCreatedAt(LocalDateTime.now());
             return messageReactionRepository.save(MessageReaction);
         } else {

@@ -5,8 +5,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import ChitChat.chat_service.dto.request.ConversationRequest;
 import ChitChat.chat_service.entity.Conversation;
+import ChitChat.chat_service.mapper.ConversationMapper;
 import ChitChat.chat_service.repository.ConversationRepository;
+import ChitChat.chat_service.repository.MessageRepository;
+import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,6 +21,8 @@ import lombok.experimental.FieldDefaults;
 public class ConversationService {
     
     ConversationRepository conversationRepository;
+    MessageRepository messageRepository;
+    ConversationMapper conversationMapper;
     
     static int CONVERSATIONS_PER_PAGE = 20;
 
@@ -40,13 +46,95 @@ public class ConversationService {
 
     // POST METHODS
 
-    public Conversation createConversation(Conversation conversation) {
-        return conversationRepository.save(conversation);
+    public Conversation createConversation(ConversationRequest conversationRequest) {
+        return conversationRepository.save(conversationMapper.toConversation(conversationRequest));
     }
 
     // PUT METHODS
 
-    public Conversation updateConversation(Conversation conversation) {
+    @Transactional
+    public Conversation updateConversation(ConversationRequest conversationRequest) {
+        Conversation conversation = conversationRepository.findById(conversationRequest.getId()).get();
+
+        if(conversationRequest.getName() != null && !conversationRequest.getName().isEmpty()
+            && !conversationRequest.getName().equals(conversation.getName())) {
+            conversation.setName(conversationRequest.getName());
+        }
+
+        if(conversationRequest.getDescription() != null && !conversationRequest.getDescription().isEmpty()
+            && !conversationRequest.getDescription().equals(conversation.getDescription())) {
+            conversation.setDescription(conversationRequest.getDescription());
+        }
+
+        if(conversationRequest.getColor() != null && !conversationRequest.getColor().isEmpty()
+            && !conversationRequest.getColor().equals(conversation.getColor())) {
+            conversation.setColor(conversationRequest.getColor());
+        }
+
+        if(conversationRequest.getEmoji() != null && !conversationRequest.getEmoji().isEmpty()
+            && !conversationRequest.getEmoji().equals(conversation.getEmoji())) {
+            conversation.setEmoji(conversationRequest.getEmoji());
+        }
+
+        if(conversationRequest.getParticipantIds() != null && !conversationRequest.getParticipantIds().isEmpty()
+            && !conversationRequest.getParticipantIds().equals(conversation.getParticipantIds())) {
+            conversation.setParticipantIds(conversationRequest.getParticipantIds());
+        }
+
+        if(conversationRequest.getOwnerId() != null
+            && !conversationRequest.getOwnerId().equals(conversation.getOwnerId())) {
+            conversation.setOwnerId(conversationRequest.getOwnerId());
+        }
+
+        if(conversationRequest.getLastMessageId() != null 
+            && !conversationRequest.getLastMessageId().equals(conversation.getLastMessage().getId())) {
+            conversation.setLastMessage(messageRepository.findById(conversationRequest.getLastMessageId()).get());
+        }
+
+        if(conversationRequest.isGroup() != conversation.isGroup()) {
+            conversation.setGroup(conversationRequest.isGroup());
+        }
+
+        if(conversationRequest.isRead() != conversation.isRead()) {
+            conversation.setRead(conversationRequest.isRead());
+        }
+
+        if(conversationRequest.isMuted() != conversation.isMuted()) {
+            conversation.setMuted(conversationRequest.isMuted());
+        }
+
+        if(conversationRequest.isPinned() != conversation.isPinned()) {
+            conversation.setPinned(conversationRequest.isPinned());
+        }
+
+        if(conversationRequest.isArchived() != conversation.isArchived()) {
+            conversation.setArchived(conversationRequest.isArchived());
+        }
+
+        if(conversationRequest.isDeleted() != conversation.isDeleted()) {
+            conversation.setDeleted(conversationRequest.isDeleted());
+        }
+
+        if(conversationRequest.isBlocked() != conversation.isBlocked()) {
+            conversation.setBlocked(conversationRequest.isBlocked());
+        }
+
+        if(conversationRequest.isReported() != conversation.isReported()) {
+            conversation.setReported(conversationRequest.isReported());
+        }
+
+        if(conversationRequest.isSpam() != conversation.isSpam()) {
+            conversation.setSpam(conversationRequest.isSpam());
+        }
+
+        if(conversationRequest.isMarkedAsUnread() != conversation.isMarkedAsUnread()) {
+            conversation.setMarkedAsUnread(conversationRequest.isMarkedAsUnread());
+        }
+
+        if(conversationRequest.isMarkedAsRead() != conversation.isMarkedAsRead()) {
+            conversation.setMarkedAsRead(conversationRequest.isMarkedAsRead());
+        }
+
         return conversationRepository.save(conversation);
     }
 
@@ -54,6 +142,10 @@ public class ConversationService {
 
     public void deleteConversation(Conversation conversation) {
         conversationRepository.delete(conversation);
+    }
+
+    public void deleteConversationById(Long id) {
+        conversationRepository.deleteById(id);
     }
 
     // OTHER METHODS

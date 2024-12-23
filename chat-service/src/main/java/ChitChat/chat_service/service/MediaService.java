@@ -31,7 +31,7 @@ public class MediaService {
 
         media.setUrl(url);
         media.setPublicId(publicId);
-        media.setMessage(messageRepository.findById(messageId));
+        media.setMessage(messageRepository.findById(messageId).get());
 
         return mediaRepository.save(media);
     }

@@ -1,4 +1,4 @@
-package ChitChat.chat_service.dto.request;
+package ChitChat.chat_service.dto.response;
 
 import java.util.Set;
 
@@ -14,13 +14,14 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level=AccessLevel.PRIVATE)
-public class ConversationCreationReq {
+public class ConversationShortResponse {
+    
+    Long id;
+    String name;
 
-    private String name;
-    private String description;
-
-    private Set<Long> participantIds;
-    private Long ownerId;
-
-    private boolean isGroup;
+    Long ownerId;
+    Set<Long> participantIds;
+    boolean isGroup;
+    boolean isRead;
+    
 }

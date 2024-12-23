@@ -45,6 +45,6 @@ public class MessageService {
         if(!messageRepository.existsById(messageId)) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
-        messageRepository.delete(messageRepository.findById(messageId));
+        messageRepository.delete(messageRepository.findById(messageId).get());
     }
 }
