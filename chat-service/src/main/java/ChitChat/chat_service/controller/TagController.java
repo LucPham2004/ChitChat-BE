@@ -42,7 +42,7 @@ public class TagController {
             .build();
     }
     
-    @PostMapping
+    @PostMapping("/create")
     public ApiResponse<Tag> createTag(String nameTag) {
         return ApiResponse.<Tag>builder()
             .code(1000)
@@ -60,7 +60,7 @@ public class TagController {
             .build();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public ApiResponse<Void> deleteTag(@RequestBody Tag tag) {
         tagService.deleteTag(tag);
         return ApiResponse.<Void>builder()

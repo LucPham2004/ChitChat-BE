@@ -9,6 +9,7 @@ import ChitChat.chat_service.dto.UserMessageDTO;
 import ChitChat.chat_service.entity.Message;
 import ChitChat.chat_service.exception.AppException;
 import ChitChat.chat_service.exception.ErrorCode;
+import ChitChat.chat_service.repository.ConversationRepository;
 import ChitChat.chat_service.repository.MessageRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,19 +21,30 @@ import lombok.experimental.FieldDefaults;
 public class MessageService {
 
     MessageRepository messageRepository;
+    ConversationRepository conversationRepository;
     UserServiceClient userServiceClient;
 
     static int MESSAGES_PER_PAGE = 20;
 
     // Get messages
-    public Page<Message> getUserMessages(Long senderId, Long recipientId, int pageNum) {
+
+    public Page<Message> getConversationMessages(Long conversationId, int pageNum) {
+        if(!conversationRepository.existsById(conversationId)) {
+            throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
+        }
+        Pageable pageable = PageRequest.of(pageNum, MESSAGES_PER_PAGE);
+
+        return messageRepository.findByConversationId(conversationId, pageable);
+    }
+
+    public Page<Message> getUserMessages(Long senderId, int pageNum) {
         UserMessageDTO user = userServiceClient.getUserById(senderId).getResult();
         if(user == null) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
         Pageable pageable = PageRequest.of(pageNum, MESSAGES_PER_PAGE);
 
-        return messageRepository.findBySenderIdAndRecipientId(senderId, recipientId, pageable);
+        return messageRepository.findBySenderId(senderId, pageable);
     }
 
     // Send Message

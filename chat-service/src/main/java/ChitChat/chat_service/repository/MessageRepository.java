@@ -21,7 +21,9 @@ public interface MessageRepository extends PagingAndSortingRepository<Message, L
 
     boolean existsById(Long id);
 
-    Page<Message> findBySenderIdAndRecipientId(Long senderId, Long recipientId, Pageable pageable);
+    Page<Message> findByConversationId(Long conversationId, Pageable pageable);
+
+    Page<Message> findBySenderId(Long senderId, Pageable pageable);
 
     int countBySenderIdAndRecipientId(Long senderId, Long recipientId);
 

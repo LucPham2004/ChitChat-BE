@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ChitChat.chat_service.dto.response.ApiResponse;
@@ -18,7 +19,7 @@ import lombok.experimental.FieldDefaults;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/chat")
+@RequestMapping("/api/messages")
 @FieldDefaults(level=AccessLevel.PRIVATE, makeFinal=true)
 public class MessageController {
 
@@ -26,18 +27,33 @@ public class MessageController {
     MessageMapper chatMapper;
     
     // Get messages
-    @GetMapping("/")
-    public ApiResponse<Page<ChatResponse>> getUserMessages(Long senderId, Long recipientId, int pageNum) {
-        Page<Message> messages = service.getUserMessages(senderId, recipientId, pageNum);
+
+    @GetMapping("/get/conversation")
+    public ApiResponse<Page<ChatResponse>> getConversationMessages(
+                @RequestParam Long conversationId,
+                @RequestParam int pageNum) {
+        Page<Message> messages = service.getConversationMessages(conversationId, pageNum);
         return ApiResponse.<Page<ChatResponse>>builder()
             .code(1000)
-            .message("Get messages by sender with id: " + senderId + " and recipient with id: " + recipientId + " successfully")
+            .message("Get messages by conversation with id: " + conversationId + " successfully")
+            .result(messages.map(chatMapper::toResponse))
+            .build();
+    }
+
+    @GetMapping("/get")
+    public ApiResponse<Page<ChatResponse>> getUserMessages(
+                @RequestParam Long senderId,
+                @RequestParam int pageNum) {
+        Page<Message> messages = service.getUserMessages(senderId, pageNum);
+        return ApiResponse.<Page<ChatResponse>>builder()
+            .code(1000)
+            .message("Get messages by sender with id: " + senderId + " successfully")
             .result(messages.map(chatMapper::toResponse))
             .build();
     }
 
     // Delete message
-    @DeleteMapping("/{messageId}")
+    @DeleteMapping("/delete/{messageId}")
     public ApiResponse<Void> deleteMessage(@PathVariable Long messageId) {
         this.service.deleteMessage(messageId);
         return ApiResponse.<Void>builder()

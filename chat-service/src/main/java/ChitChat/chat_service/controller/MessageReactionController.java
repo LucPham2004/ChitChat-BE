@@ -15,41 +15,41 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
 @RestController
-@RequestMapping("/api/message-reaction")
+@RequestMapping("/api/message-reactions")
 @RequiredArgsConstructor
 @FieldDefaults(level=AccessLevel.PRIVATE, makeFinal=true)
 public class MessageReactionController {
     MessageReactionService messageReactionService;
 
-    // Create Post messageReaction
-    @GetMapping("/post/count/{postId}")
-    public ApiResponse<Integer> getMessageReactionCount(@PathVariable Long postId) {
-        int messageReactionCount = messageReactionService.getMessageReactionCount(postId);
+    // Create messageReaction
+    @GetMapping("/count/message/{messageId}")
+    public ApiResponse<Integer> getMessageReactionCount(@PathVariable Long messageId) {
+        int messageReactionCount = messageReactionService.getMessageReactionCount(messageId);
         return ApiResponse.<Integer>builder()
             .code(1000)
-            .message("Create post messageReaction successfully")
+            .message("Create message messageReaction successfully")
             .result(messageReactionCount)
             .build();
     }
     
-    // Create Post messageReaction
-    @PostMapping("/post/add/{userId}/{postId}")
-    public ApiResponse<MessageReaction> createMessageReaction(@PathVariable Long userId, @PathVariable Long postId) {
-        MessageReaction messageReaction = messageReactionService.createMessageReaction(userId, postId);
+    // Create messageReaction
+    @PostMapping("/add/user/{userId}/message/{messageId}")
+    public ApiResponse<MessageReaction> createMessageReaction(@PathVariable Long userId, @PathVariable Long messageId) {
+        MessageReaction messageReaction = messageReactionService.createMessageReaction(userId, messageId);
         return ApiResponse.<MessageReaction>builder()
             .code(1000)
-            .message("Create post messageReaction successfully")
+            .message("Create message messageReaction successfully")
             .result(messageReaction)
             .build();
     }
 
-    // Delete Post messageReaction
-    @DeleteMapping("/post/remove/{userId}/{postId}")
-    public ApiResponse<String> deleteMessageReaction(@PathVariable Long userId, @PathVariable Long postId) {
-        messageReactionService.deleteMessageReaction(userId, postId);
+    // Delete messageReaction
+    @DeleteMapping("/remove/user/{userId}/message/{messageId}")
+    public ApiResponse<String> deleteMessageReaction(@PathVariable Long userId, @PathVariable Long messageId) {
+        messageReactionService.deleteMessageReaction(userId, messageId);
         return ApiResponse.<String>builder()
             .code(1000)
-            .message("Delete post messageReaction successfully")
+            .message("Delete message messageReaction successfully")
             .result("")
             .build();
     }

@@ -92,7 +92,7 @@ public class ConversationController {
 
     // DELETE METHODS
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ApiResponse<Void> deleteConversation(@PathVariable Long id) {
         Conversation conversation = conversationService.getById(id);
         conversationService.deleteConversation(conversation);

@@ -54,9 +54,6 @@ public class Message {
     // ManyToOne with User
     private Long senderId;
 
-    // ManyToOne with User
-    private Long recipientId;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conversation_id")
     @JsonManagedReference(value = "conversation_messages")
