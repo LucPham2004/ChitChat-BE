@@ -31,9 +31,9 @@ public class TagService {
         return tagRepository.findAllOrderByMessageDesc(pageable);
     }
     
-    public Tag createTag(String nameTag) {
+    public Tag createTag(Long userId) {
         Tag tag = new Tag();
-        tag.setName(nameTag);
+        tag.setUserId(userId);
         return tagRepository.save(tag);
     }
 
@@ -42,12 +42,5 @@ public class TagService {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
         tagRepository.delete(tagRepository.findById(id).get());
-    }
-
-    public void deleteTag(Tag tag) {
-        if(tagRepository.existsById(tag.getId())) {
-            throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
-        }
-        tagRepository.delete(tag);
     }
 }

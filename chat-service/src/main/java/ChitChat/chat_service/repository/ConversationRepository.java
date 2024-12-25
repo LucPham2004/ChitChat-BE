@@ -22,11 +22,9 @@ public interface ConversationRepository extends PagingAndSortingRepository<Conve
 
     boolean existsById(Long id);
 
-    Page<Conversation> findByParticipantIds(Long userId, Pageable pageable);
+    //Page<Conversation> findByParticipantIds(Long userId, Pageable pageable);
     
     Page<Conversation> findByOwnerId(Long userId, Pageable pageable);
-
-    int countByParticipantIds(Long userId);
 
     int countByOwnerId(Long userId);
 }

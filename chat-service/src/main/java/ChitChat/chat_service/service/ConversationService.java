@@ -9,7 +9,6 @@ import ChitChat.chat_service.dto.request.ConversationRequest;
 import ChitChat.chat_service.entity.Conversation;
 import ChitChat.chat_service.mapper.ConversationMapper;
 import ChitChat.chat_service.repository.ConversationRepository;
-import ChitChat.chat_service.repository.MessageRepository;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ import lombok.experimental.FieldDefaults;
 public class ConversationService {
     
     ConversationRepository conversationRepository;
-    MessageRepository messageRepository;
+    //MessageRepository messageRepository;
     ConversationMapper conversationMapper;
     
     static int CONVERSATIONS_PER_PAGE = 20;
@@ -32,11 +31,11 @@ public class ConversationService {
         return conversationRepository.findById(id).get();
     }
 
-    public Page<Conversation> getByParticipantIds(Long userId, int pageNum) {
-        Pageable pageable = PageRequest.of(pageNum, CONVERSATIONS_PER_PAGE);
+    // public Page<Conversation> getByParticipantIds(Long userId, int pageNum) {
+    //     Pageable pageable = PageRequest.of(pageNum, CONVERSATIONS_PER_PAGE);
 
-        return conversationRepository.findByParticipantIds(userId, pageable);
-    }
+    //     return conversationRepository.findByParticipantIds(userId, pageable);
+    // }
 
     public Page<Conversation> getByOwnerId(Long userId, int pageNum) {
         Pageable pageable = PageRequest.of(pageNum, CONVERSATIONS_PER_PAGE);
@@ -86,9 +85,9 @@ public class ConversationService {
             conversation.setOwnerId(conversationRequest.getOwnerId());
         }
 
-        if(conversationRequest.getLastMessageId() != null 
-            && !conversationRequest.getLastMessageId().equals(conversation.getLastMessage().getId())) {
-            conversation.setLastMessage(messageRepository.findById(conversationRequest.getLastMessageId()).get());
+        if(conversationRequest.getLastMessage() != null && !conversationRequest.getLastMessage().isEmpty()
+            && !conversationRequest.getLastMessage().equals(conversation.getLastMessage())) {
+            conversation.setLastMessage(conversationRequest.getLastMessage());
         }
 
         if(conversationRequest.isGroup() != conversation.isGroup()) {
@@ -151,10 +150,6 @@ public class ConversationService {
     // OTHER METHODS
     public boolean existsById(Long id) {
         return conversationRepository.existsById(id);
-    }
-
-    public int countByParticipantIds(Long userId) {
-        return conversationRepository.countByParticipantIds(userId);
     }
 
     public int countByOwnerId(Long userId) {

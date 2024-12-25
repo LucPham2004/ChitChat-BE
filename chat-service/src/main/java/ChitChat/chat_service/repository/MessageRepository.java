@@ -25,7 +25,7 @@ public interface MessageRepository extends PagingAndSortingRepository<Message, L
 
     Page<Message> findBySenderId(Long senderId, Pageable pageable);
 
-    int countBySenderIdAndRecipientId(Long senderId, Long recipientId);
+    int countBySenderId(Long senderId);
 
     @Query("""
             SELECT COUNT(m) FROM Message m

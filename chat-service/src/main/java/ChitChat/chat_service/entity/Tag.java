@@ -30,8 +30,6 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-
     @Column(name = "created_at", nullable = true, updatable = true)
     private Instant createdAt;
 

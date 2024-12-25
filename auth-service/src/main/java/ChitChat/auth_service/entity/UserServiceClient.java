@@ -2,6 +2,7 @@ package ChitChat.auth_service.entity;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +14,7 @@ import ChitChat.auth_service.dto.response.ApiResponse;
 import ChitChat.auth_service.dto.response.UserAuthResponse;
 import ChitChat.auth_service.dto.response.UserResponse;
 
-@FeignClient(name = "user-service", path = "/api/users")
+@FeignClient(name = "user-service", url = "http://localhost:8082")
 public interface UserServiceClient {
 
     // Get Methods
@@ -30,8 +31,8 @@ public interface UserServiceClient {
     @PostMapping("/create")
     ApiResponse<UserResponse> createUser(@RequestBody UserCreationRequest reqUser);
 
-    @PostMapping("/verify-otp")
-    ApiResponse<Boolean> verifyOtp(@RequestBody Long userId, String otp);
+    @PostMapping("/verify-otp/user/{userId}/otp/{otp}")
+    ApiResponse<Boolean> verifyOtp(@PathVariable Long userId, @PathVariable String otp);
 
     // Put
     @PutMapping("/update/otp")

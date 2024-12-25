@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "direct_messages")
+@Table(name = "conversations")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -64,9 +64,7 @@ public class Conversation {
     @JsonManagedReference(value = "conversation_messages")
     private Set<Message> messages;
 
-    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JsonManagedReference(value = "conversation_lastMessage")
-    private Message lastMessage;
+    private String lastMessage;
 
     // Flags
 

@@ -32,17 +32,18 @@ public class ConversationController {
     
     // GET METHODS
 
-    @GetMapping("/participants")
-    public ApiResponse<Page<ConversationShortResponse>> getConversationsByParticipantIds(
-                @RequestParam Long userId, 
-                @RequestParam int pageNum) {
-        Page<Conversation> conversations = conversationService.getByParticipantIds(userId, pageNum);
-        return ApiResponse.<Page<ConversationShortResponse>>builder()
-            .code(1000)
-            .message("Get conversations by participant with id: " + userId + " successfully")
-            .result(conversations.map(conversationMapper::toConversationShortResponse))
-            .build();
-    }
+    // not finished
+    // @GetMapping("/participants")
+    // public ApiResponse<Page<ConversationShortResponse>> getConversationsByParticipantIds(
+    //             @RequestParam Long userId, 
+    //             @RequestParam int pageNum) {
+    //     Page<Conversation> conversations = conversationService.getByParticipantIds(userId, pageNum);
+    //     return ApiResponse.<Page<ConversationShortResponse>>builder()
+    //         .code(1000)
+    //         .message("Get conversations by participant with id: " + userId + " successfully")
+    //         .result(conversations.map(conversationMapper::toConversationShortResponse))
+    //         .build();
+    // }
 
     @GetMapping("/owner")
     public ApiResponse<Page<ConversationShortResponse>> getConversationsByOwnerId(

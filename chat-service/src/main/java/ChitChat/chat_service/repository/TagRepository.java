@@ -12,8 +12,6 @@ import ChitChat.chat_service.entity.Tag;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
-    Tag findByName(String name);
-
     @Override
     Page<Tag> findAll(Pageable pageable);
 

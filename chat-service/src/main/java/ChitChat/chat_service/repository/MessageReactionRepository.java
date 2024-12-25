@@ -16,7 +16,7 @@ public interface MessageReactionRepository extends JpaRepository<MessageReaction
     int countByUserId(Long id);
     
     @Query("""
-            SELECT COUNT(l) FROM Like l
+            SELECT COUNT(mr) FROM MessageReaction mr
             """)
     int countAll();
 }

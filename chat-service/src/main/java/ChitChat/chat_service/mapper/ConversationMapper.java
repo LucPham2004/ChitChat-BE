@@ -6,7 +6,6 @@ import ChitChat.chat_service.dto.request.ConversationRequest;
 import ChitChat.chat_service.dto.response.ConversationResponse;
 import ChitChat.chat_service.dto.response.ConversationShortResponse;
 import ChitChat.chat_service.entity.Conversation;
-import ChitChat.chat_service.repository.MessageRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -16,7 +15,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level=AccessLevel.PRIVATE, makeFinal = true)
 public class ConversationMapper {
 
-    MessageRepository messageRepository;
+    //MessageRepository messageRepository;
     
     public Conversation toConversation(ConversationRequest conversationRequest) {
         return Conversation.builder()
@@ -26,7 +25,7 @@ public class ConversationMapper {
             .emoji(conversationRequest.getEmoji())
             .participantIds(conversationRequest.getParticipantIds())
             .ownerId(conversationRequest.getOwnerId())
-            .lastMessage(messageRepository.findById(conversationRequest.getLastMessageId()).get())
+            .lastMessage(conversationRequest.getLastMessage())
             .isGroup(conversationRequest.isGroup())
             .isRead(conversationRequest.isRead())
             .isMuted(conversationRequest.isMuted())
@@ -45,6 +44,7 @@ public class ConversationMapper {
         return ConversationShortResponse.builder()
             .id(conversation.getId())
             .name(conversation.getName())
+            .lastMessage(conversation.getLastMessage())
             .ownerId(conversation.getOwnerId())
             .participantIds(conversation.getParticipantIds())
             .isGroup(conversation.isGroup())

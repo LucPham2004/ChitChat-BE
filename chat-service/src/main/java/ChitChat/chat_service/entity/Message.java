@@ -3,6 +3,7 @@ package ChitChat.chat_service.entity;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
@@ -25,7 +26,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "direct_messages")
+@Table(name = "messages")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -37,8 +38,6 @@ public class Message {
     private Long id;
 
     private String content;
-    
-    private String url;
 
     @Column(name = "is_read")
     private boolean isRead;
@@ -56,7 +55,7 @@ public class Message {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conversation_id")
-    @JsonManagedReference(value = "conversation_messages")
+    @JsonBackReference(value = "conversation_messages")
     private Conversation conversation;
 
     @OneToMany(mappedBy = "message", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
