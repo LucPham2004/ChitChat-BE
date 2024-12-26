@@ -22,7 +22,7 @@ public class MessageReactionController {
     MessageReactionService messageReactionService;
 
     // Create messageReaction
-    @GetMapping("/count/message/{messageId}")
+    @GetMapping("/get/count/message/{messageId}")
     public ApiResponse<Integer> getMessageReactionCount(@PathVariable Long messageId) {
         int messageReactionCount = messageReactionService.getMessageReactionCount(messageId);
         return ApiResponse.<Integer>builder()
@@ -33,7 +33,7 @@ public class MessageReactionController {
     }
     
     // Create messageReaction
-    @PostMapping("/add/user/{userId}/message/{messageId}")
+    @PostMapping("/create/user/{userId}/message/{messageId}")
     public ApiResponse<MessageReaction> createMessageReaction(@PathVariable Long userId, @PathVariable Long messageId) {
         MessageReaction messageReaction = messageReactionService.createMessageReaction(userId, messageId);
         return ApiResponse.<MessageReaction>builder()

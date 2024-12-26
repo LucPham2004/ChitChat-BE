@@ -45,7 +45,7 @@ public class ConversationController {
     //         .build();
     // }
 
-    @GetMapping("/owner")
+    @GetMapping("/get/owner")
     public ApiResponse<Page<ConversationShortResponse>> getConversationsByOwnerId(
                 @RequestParam Long userId, 
                 @RequestParam int pageNum) {
@@ -57,7 +57,7 @@ public class ConversationController {
             .build();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public ApiResponse<ConversationResponse> getConversationById(@PathVariable Long id) {
         Conversation conversation = conversationService.getById(id);
         return ApiResponse.<ConversationResponse>builder()

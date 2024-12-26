@@ -21,6 +21,7 @@ public class ConversationResponse {
     String description;
     String color;
     String emoji;
+    String lastMessage;
 
     Long ownerId;
     Set<Long> participantIds;

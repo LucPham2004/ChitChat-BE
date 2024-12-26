@@ -48,9 +48,9 @@ public class MessageService {
     }
 
     // Send Message
-    public Message saveMessage(Message message) {
-        return messageRepository.save(message);
-    }
+    // public Message saveMessage(Message message) {
+    //     return messageRepository.save(message);
+    // }
 
     // Delete Message
     public void deleteMessage(Long messageId) {
@@ -58,5 +58,15 @@ public class MessageService {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
         messageRepository.delete(messageRepository.findById(messageId).get());
+    }
+
+    // Update Message
+    public Message updateMessage(Long messageId, String content) {
+        if(!messageRepository.existsById(messageId)) {
+            throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
+        }
+        Message message = messageRepository.findById(messageId).get();
+        message.setContent(content);
+        return messageRepository.save(message);
     }
 }

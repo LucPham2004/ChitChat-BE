@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -61,4 +62,17 @@ public class MessageController {
             .message("Delete message with ID " + messageId + " successfully!")
             .build();
     }
+
+    // Update message
+    @PutMapping("/update")
+    public ApiResponse<Void> updateMessage(
+                @RequestParam Long messageId,
+                @RequestParam String content) {
+        this.service.updateMessage(messageId, content);
+        return ApiResponse.<Void>builder()
+            .code(1000)
+            .message("Update message with ID " + messageId + " successfully!")
+            .build();
+    }
+
 }

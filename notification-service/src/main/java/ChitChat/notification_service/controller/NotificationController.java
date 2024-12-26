@@ -25,7 +25,7 @@ public class NotificationController {
     NotificationService notificationService;
 
     // Get User Notifications
-    @GetMapping("/")
+    @GetMapping("/get")
     public ApiResponse<Page<Notification>> getUserNotifications(
             @RequestParam Long userId,
             @RequestParam(defaultValue = "0") int pageNum) {
@@ -44,7 +44,7 @@ public class NotificationController {
     // }
 
     // Delete Notification
-    @DeleteMapping("/{notifyId}")
+    @DeleteMapping("/delete/{notifyId}")
     public ApiResponse<String> deleteNotify(@PathVariable Long notifyId) {
         notificationService.deleteNotify(notifyId);
         return ApiResponse.<String>builder()

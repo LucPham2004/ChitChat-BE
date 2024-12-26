@@ -59,6 +59,7 @@ public class ConversationMapper {
             .description(conversation.getDescription())
             .color(conversation.getColor())
             .emoji(conversation.getEmoji())
+            .lastMessage(conversation.getLastMessage())
             .ownerId(conversation.getOwnerId())
             .participantIds(conversation.getParticipantIds())
             .isGroup(conversation.isGroup())
