@@ -84,7 +84,7 @@ public class User {
     // Entity relationships
 
     // Authorities Many-to-Many
-    private Set<Long> authorityIds;
+    private Set<String> authorityIds;
     
     // Friendships
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

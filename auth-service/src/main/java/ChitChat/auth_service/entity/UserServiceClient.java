@@ -18,6 +18,10 @@ import ChitChat.auth_service.dto.response.UserResponse;
 public interface UserServiceClient {
 
     // Get Methods
+    @GetMapping("/get/account")
+    ApiResponse<UserResponse> handleGetAccount(
+            @RequestParam String loginInput);
+
     @GetMapping("/search")
     ApiResponse<UserAuthResponse> handleGetUserByUsernameOrEmailOrPhone(
             @RequestParam String loginInput);

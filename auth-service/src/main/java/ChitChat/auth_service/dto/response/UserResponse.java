@@ -1,6 +1,7 @@
 package ChitChat.auth_service.dto.response;
 
 import java.time.Instant;
+import java.util.Set;
 
 import ChitChat.auth_service.entity.Gender;
 import lombok.AccessLevel;
@@ -20,6 +21,9 @@ public class UserResponse {
 
      String username;
      String email;
+
+     Set<String> authorityIds;
+
      String firstName;
      String lastName;
      String phone;

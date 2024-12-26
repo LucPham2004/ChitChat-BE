@@ -38,6 +38,7 @@ public class UserMapper {
         userResponse.setId(user.getId());
         userResponse.setUsername(user.getUsername());
         userResponse.setEmail(user.getEmail());
+        userResponse.setAuthorityIds(user.getAuthorityIds());
         userResponse.setFirstName(user.getFirstName());
         userResponse.setLastName(user.getLastName());
         userResponse.setPhone(user.getPhone());
@@ -70,6 +71,7 @@ public class UserMapper {
         userResponse.setEmail(user.getEmail());
         userResponse.setPhone(user.getPhone());
         userResponse.setPassword(user.getPassword());
+        userResponse.setAuthorityIds(user.getAuthorityIds());
 
         return userResponse;
     }

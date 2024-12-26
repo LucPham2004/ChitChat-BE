@@ -64,7 +64,18 @@ public class UserController {
                                 .build();
         }
 
-        // Get User by id
+        // Get User by username or email or phone
+
+        @GetMapping("/get/account")
+        public ApiResponse<UserResponse> handleGetAccount(@RequestParam String loginInput) {
+                var dbUser = this.userService.handleGetUserByUsernameOrEmailOrPhone(loginInput);
+                return ApiResponse.<UserResponse>builder()
+                                .code(1000)
+                                .message("Get user with login param " + loginInput + " successfully!")
+                                .result(userMapper.toUserResponse(dbUser))
+                                .build();
+        }
+        
         @GetMapping("/seach")
         public ApiResponse<UserAuthResponse> handleGetUserByUsernameOrEmailOrPhone(@RequestParam String loginInput) {
                 var dbUser = this.userService.handleGetUserByUsernameOrEmailOrPhone(loginInput);

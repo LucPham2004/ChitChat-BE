@@ -117,38 +117,38 @@ public class AuthController {
                 .body(apiResponse); // Return the body with the API response
     }
 
-    // @GetMapping("/account")
-    // public ApiResponse<LoginResponse.UserGetAccount> getAccount() {
-    //     String login = SecurityUtils.getCurrentUserLogin().isPresent()
-    //             ? SecurityUtils.getCurrentUserLogin().get()
-    //             : "";
+    @GetMapping("/account")
+    public ApiResponse<LoginResponse.UserGetAccount> getAccount() {
+        String login = SecurityUtils.getCurrentUserLogin().isPresent()
+                ? SecurityUtils.getCurrentUserLogin().get()
+                : "";
 
-    //     UserResponse currentUserDB = userServiceClient.handleGetUserByUsernameOrEmailOrPhone(login).getResult();
+        UserResponse currentUserDB = userServiceClient.handleGetAccount(login).getResult();
 
-    //     LoginResponse.UserLogin userLogin = new LoginResponse.UserLogin();
-    //     LoginResponse.UserGetAccount userGetAccount = new LoginResponse.UserGetAccount();
+        LoginResponse.UserLogin userLogin = new LoginResponse.UserLogin();
+        LoginResponse.UserGetAccount userGetAccount = new LoginResponse.UserGetAccount();
 
-    //     Set<Role> authorities = currentUserDB.getAuthorityIds().stream()
-	// 			.map(roleRepository::findById)
-	// 			.filter(Optional::isPresent)
-	// 			.map(Optional::get)
-	// 			.collect(Collectors.toSet());
+        Set<Role> authorities = currentUserDB.getAuthorityIds().stream()
+				.map(roleRepository::findById)
+				.filter(Optional::isPresent)
+				.map(Optional::get)
+				.collect(Collectors.toSet());
 
-    //     if (currentUserDB != null) {
-    //         userLogin.setId(currentUserDB.getId());
-    //         userLogin.setEmail(currentUserDB.getEmail());
-    //         userLogin.setUsername(currentUserDB.getUsername());
-    //         userLogin.setAuthorities(authorities);
+        if (currentUserDB != null) {
+            userLogin.setId(currentUserDB.getId());
+            userLogin.setEmail(currentUserDB.getEmail());
+            userLogin.setUsername(currentUserDB.getUsername());
+            userLogin.setAuthorities(authorities);
 
-    //         userGetAccount.setUser(userLogin);
-    //     }
+            userGetAccount.setUser(userLogin);
+        }
 
-    //     return ApiResponse.<LoginResponse.UserGetAccount>builder()
-    //             .code(1000)
-    //             .message("Get current user successfully!")
-    //             .result(userGetAccount)
-    //             .build();
-    // }
+        return ApiResponse.<LoginResponse.UserGetAccount>builder()
+                .code(1000)
+                .message("Get current user successfully!")
+                .result(userGetAccount)
+                .build();
+    }
 
     @GetMapping("/refresh")
     public ResponseEntity<ApiResponse<LoginResponse>> getRefreshToken(

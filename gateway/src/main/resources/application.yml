@@ -10,19 +10,19 @@ spring:
         - id: auth-service
           uri: http://localhost:8081
           predicates:
-            - Path=/auth/**
+            - Path=/auth-service/**
         
         - id: user-service
           uri: http://localhost:8082
           predicates:
-            - Path=/users/**
+            - Path=/user-service/**
         
         - id: chat-service
           uri: http://localhost:8083
           predicates:
-            - Path=/chat/**
+            - Path=/chat-service/**
         
         - id: notification-service
           uri: http://localhost:8084
           predicates:
-            - Path=/notification/**
+            - Path=/notification-service/**
