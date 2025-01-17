@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -70,7 +71,7 @@ public class ConversationController {
     // POST METHODS
 
     @PostMapping("/create")
-    public ApiResponse<ConversationResponse> createConversation(ConversationRequest conversationRequest) {
+    public ApiResponse<ConversationResponse> createConversation(@RequestBody ConversationRequest conversationRequest) {
         Conversation newConversation = conversationService.createConversation(conversationRequest);
         return ApiResponse.<ConversationResponse>builder()
             .code(1000)
@@ -82,7 +83,7 @@ public class ConversationController {
     // PUT METHODS
 
     @PutMapping("/update")
-    public ApiResponse<ConversationResponse> updateConversation(ConversationRequest conversationRequest) {
+    public ApiResponse<ConversationResponse> updateConversation(@RequestBody ConversationRequest conversationRequest) {
         Conversation updatedConversation = conversationService.updateConversation(conversationRequest);
         return ApiResponse.<ConversationResponse>builder()
             .code(1000)
