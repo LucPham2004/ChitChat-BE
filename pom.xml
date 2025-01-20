@@ -9,11 +9,11 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>demo</artifactId>
+	<artifactId>ChitChat</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+	<name>ChitChat</name>
+	<description>ChitChat</description>
 	<url/>
 	<licenses>
 		<license/>
