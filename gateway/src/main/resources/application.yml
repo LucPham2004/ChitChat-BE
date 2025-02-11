@@ -1,30 +1,47 @@
 server:
-  port: 8080
+  port: 8888
 
 spring:
   application:
     name: gateway
   cloud:
     gateway:
+      globalcors:
+          corsConfigurations:
+            '[/**]':
+              allowedOrigins: "*"
+              allowedMethods:
+                - GET
+                - POST
+                - PUT
+                - DELETE
+              allowedHeaders: "*"
+
       routes:
         - id: auth-service
-          uri: http://localhost:8081
+          uri: http://auth-service:8080
           predicates:
-            - Path=/auth-service/api/**
-        
+            - Path=/auth-service/**
+          filters:
+            - RewritePath=/auth-service/(?<path>.*), /$\{path}
+
         - id: user-service
-          uri: http://localhost:8082
+          uri: http://user-service:8081
           predicates:
             - Path=/user-service/**
           filters:
-            - RewritePath=/user-service/(?<remaining>.*), /${remaining}
-        
+            - RewritePath=/user-service/(?<path>.*), /$\{path}
+
         - id: chat-service
-          uri: http://localhost:8083
+          uri: http://chat-service:8082
           predicates:
-            - Path=/chat-service/api/**
-        
+            - Path=/chat-service/**
+          filters:
+            - RewritePath=/chat-service/(?<path>.*), /$\{path}
+
         - id: notification-service
-          uri: http://localhost:8084
+          uri: http://notification-service:8083
           predicates:
-            - Path=/notification-service/api/**
+            - Path=/notification-service/**
+          filters:
+            - RewritePath=/notification-service/(?<path>.*), /$\{path}

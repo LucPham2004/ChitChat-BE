@@ -8,7 +8,7 @@ import ChitChat.notification_service.dto.UserDTO;
 import ChitChat.notification_service.dto.response.ApiResponse;
 
 
-@FeignClient(name = "user-service", url = "http://localhost:8082")
+@FeignClient(name = "user-service", url = "http://localhost:8081")
 public interface UserServiceClient {
 	
 	@GetMapping("/get/{userId}")

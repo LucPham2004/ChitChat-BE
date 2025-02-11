@@ -4,7 +4,7 @@ services:
       context: ./gateway
     container_name: api-gateway
     ports:
-      - "8080:8080"
+      - "8888:8888"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
@@ -21,7 +21,7 @@ services:
       context: ./auth-service
     container_name: auth-service
     ports:
-      - "8081:8081"
+      - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-auth:3306/authdb
       SPRING_DATASOURCE_USERNAME: myuser
@@ -37,7 +37,7 @@ services:
       context: ./user-service
     container_name: user-service
     ports:
-      - "8082:8082"
+      - "8081:8081"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-user:3306/userdb
       SPRING_DATASOURCE_USERNAME: myuser
@@ -53,7 +53,7 @@ services:
       context: ./chat-service
     container_name: chat-service
     ports:
-      - "8083:8083"
+      - "8082:8082"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-chat:3306/chatdb
       SPRING_DATASOURCE_USERNAME: myuser
@@ -69,7 +69,7 @@ services:
       context: ./notification-service
     container_name: notification-service
     ports:
-      - "8084:8084"
+      - "8083:8083"
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql-notification:3306/notificationdb
       SPRING_DATASOURCE_USERNAME: myuser
