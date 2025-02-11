@@ -106,7 +106,7 @@ public class UserService {
         if (userRepository.existsByUsername(request.getUsername())
                 || userRepository.existsByEmail(request.getEmail())
                 || userRepository.existsByPhone(request.getPhone())) {
-                    log.info("something wrong");
+                    log.info("this username/email/phone is already taken");
             throw new AppException(ErrorCode.ENTITY_EXISTED);
         }
         User user = userMapper.toUser(request);

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import ChitChat.chat_service.dto.request.ConversationRequest;
 import ChitChat.chat_service.entity.Conversation;
+import ChitChat.chat_service.exception.AppException;
+import ChitChat.chat_service.exception.ErrorCode;
 import ChitChat.chat_service.mapper.ConversationMapper;
 import ChitChat.chat_service.repository.ConversationRepository;
 import jakarta.transaction.Transactional;
@@ -28,7 +30,7 @@ public class ConversationService {
     // GET METHODS
 
     public Conversation getById(Long id) {
-        return conversationRepository.findById(id).get();
+        return conversationRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ENTITY_NOT_EXISTED));
     }
 
     // public Page<Conversation> getByParticipantIds(Long userId, int pageNum) {

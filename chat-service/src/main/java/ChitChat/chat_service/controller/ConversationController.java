@@ -24,7 +24,7 @@ import lombok.experimental.FieldDefaults;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/conversations")
+@RequestMapping("/conversations")
 @FieldDefaults(level=AccessLevel.PRIVATE, makeFinal=true)
 public class ConversationController {
     

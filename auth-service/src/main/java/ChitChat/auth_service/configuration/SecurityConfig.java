@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,19 +34,13 @@ public class SecurityConfig {
     @Value("${chitchat.jwt.base64-secret}")
     private String jwtKey;
 
-    String[] whiteList = {};
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(
-                        authz -> {  authz.requestMatchers(whiteList)
-                                        .permitAll()
-                                        .anyRequest().authenticated();
-                                    })
-                .formLogin(AbstractHttpConfigurer::disable)
+                        authz -> {  authz.requestMatchers("/**").permitAll();})
                 .oauth2ResourceServer(
                         (oauth2) -> oauth2
                                 .jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
