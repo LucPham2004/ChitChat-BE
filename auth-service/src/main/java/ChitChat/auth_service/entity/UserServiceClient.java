@@ -14,7 +14,7 @@ import ChitChat.auth_service.dto.response.ApiResponse;
 import ChitChat.auth_service.dto.response.UserAuthResponse;
 import ChitChat.auth_service.dto.response.UserResponse;
 
-@FeignClient(name = "user-service", url = "http://user-service:8081")
+@FeignClient(name = "user-service", url = "http://gateway:8888/user-service/users") //"http://localhost:8888/user-service" gateway
 public interface UserServiceClient {
 
     // Get Methods

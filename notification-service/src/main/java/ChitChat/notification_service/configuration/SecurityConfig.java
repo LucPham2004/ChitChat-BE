@@ -22,7 +22,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(
-                        authz -> {  authz.requestMatchers(whiteList)
+                        authz -> {  authz.requestMatchers("/**")
                                         .permitAll()
                                         .anyRequest().authenticated();
                                     })

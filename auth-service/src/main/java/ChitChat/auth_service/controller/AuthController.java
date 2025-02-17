@@ -249,18 +249,18 @@ public class AuthController {
 
 		UserUpdateOtpRequest updateUser = new UserUpdateOtpRequest();
 
-        String otp = OtpUtil.generateOtp(6);
-        updateUser.setOtp(otp);
-        updateUser.setOtpGeneratedTime(Instant.now());
+        // String otp = OtpUtil.generateOtp(6);
+        // updateUser.setOtp(otp);
+        // updateUser.setOtpGeneratedTime(Instant.now());
 
-        try {
-            emailUtil.sendOtpEmail(reqUser.getEmail(), otp);
+        // try {
+        //     emailUtil.sendOtpEmail(reqUser.getEmail(), otp);
 
-        } catch (MessagingException e) {
-            throw new AppException(ErrorCode.ERROR_EMAIL);
-        }
+        // } catch (MessagingException e) {
+        //     throw new AppException(ErrorCode.ERROR_EMAIL);
+        // }
 
-        userServiceClient.updateUserOtp(updateUser);
+        // userServiceClient.updateUserOtp(updateUser);
 
         return ApiResponse.<UserResponse>builder()
                 .code(1000)

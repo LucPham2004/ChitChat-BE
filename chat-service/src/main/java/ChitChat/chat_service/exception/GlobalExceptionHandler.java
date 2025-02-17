@@ -1,5 +1,6 @@
 package ChitChat.chat_service.exception;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,24 +13,26 @@ import ChitChat.chat_service.dto.response.ApiResponse;
 public class GlobalExceptionHandler {
     
     @ExceptionHandler(value = Exception.class)
-    public ResponseEntity<ApiResponse<String>> handlingRuntimeException(RuntimeException exception) {
+    public ResponseEntity<ApiResponse<String>> handlingException(Exception exception) {
         ApiResponse<String> apiResponse = new ApiResponse<>();
 
         apiResponse.setCode(ErrorCode.UNCATEGORIZED_EXCEPTION.getCode());
         apiResponse.setMessage(ErrorCode.UNCATEGORIZED_EXCEPTION.getMessage());
         
-        return ResponseEntity.badRequest().body(apiResponse);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
     }
 
     @ExceptionHandler(value = AppException.class)
-    public ResponseEntity<ApiResponse<String>> handlingAppException(AppException exception) {
+    public ResponseEntity<ApiResponse<String>> handleAppException(AppException exception) {
         ErrorCode errorCode = exception.getErrorCode();
-        ApiResponse<String> apiResponse = new ApiResponse<>();
 
-        apiResponse.setCode(errorCode.getCode());
-        apiResponse.setMessage(errorCode.getMessage());
-        
-        return ResponseEntity.badRequest().body(apiResponse);
+        ApiResponse<String> apiResponse = ApiResponse.<String>builder()
+                .code(errorCode.getCode())
+                .message(errorCode.getMessage())
+                .result(exception.getMessage())
+                .build();
+
+        return ResponseEntity.status(errorCode.getHttpStatusCode()).body(apiResponse);
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
