@@ -76,9 +76,9 @@ public class UserController {
                                 .build();
         }
         
-        @GetMapping("/seach")
-        public ApiResponse<UserAuthResponse> handleGetUserByUsernameOrEmailOrPhone(@RequestParam String loginInput) {
-                var dbUser = this.userService.handleGetUserByUsernameOrEmailOrPhone(loginInput);
+        @GetMapping("/search")
+        public ApiResponse<UserAuthResponse> handleGetUserByLoginInput(@RequestParam String loginInput) {
+                var dbUser = this.userService.handleGetUserByLoginInput(loginInput);
                 return ApiResponse.<UserAuthResponse>builder()
                                 .code(1000)
                                 .message("Get user with login param " + loginInput + " successfully!")
@@ -86,7 +86,7 @@ public class UserController {
                                 .build();
         }
 
-        @GetMapping("/seach&token")
+        @GetMapping("/search&token")
         public ApiResponse<UserAuthResponse> getUserByRefreshTokenAndEmailOrUsernameOrPhone(
                         @RequestParam String refresh_token, 
                         @RequestParam String login) {

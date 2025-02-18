@@ -124,6 +124,9 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
      Map<Long, Long> countMutualFriendsForUsers(@Param("userId") Long userId,
                @Param("memberIds") List<Long> memberIds);
 
+     @Query("SELECT u FROM User u WHERE u.username = :loginInput OR u.email = :loginInput OR u.phone = :loginInput")
+     Optional<User> findByUsernameOrEmailOrPhone(@Param("loginInput") String loginInput);
+               
      @Query(value = "SELECT * FROM users u WHERE u.refresh_token = :token AND (u.email = :emailUsernamePhone OR u.username = :emailUsernamePhone OR u.phone = :emailUsernamePhone)", nativeQuery = true)
      Optional<User> findByRefreshTokenAndEmailOrUsernameOrPhone(@Param("token") String token, 
                @Param("emailUsernamePhone") String emailUsernamePhone);

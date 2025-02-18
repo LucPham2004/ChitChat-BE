@@ -23,10 +23,10 @@ public interface UserServiceClient {
             @RequestParam String loginInput);
 
     @GetMapping("/search")
-    ApiResponse<UserAuthResponse> handleGetUserByUsernameOrEmailOrPhone(
+    ApiResponse<UserAuthResponse> handleGetUserByLoginInput(
             @RequestParam String loginInput);
 
-    @GetMapping("/seach&token")
+    @GetMapping("/search&token")
     ApiResponse<UserAuthResponse> getUserByRefreshTokenAndEmailOrUsernameOrPhone(
             @RequestParam String refresh_token, 
             @RequestParam String login);

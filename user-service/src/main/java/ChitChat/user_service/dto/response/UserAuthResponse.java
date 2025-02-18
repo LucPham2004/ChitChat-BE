@@ -22,7 +22,7 @@ public class UserAuthResponse {
     String email;
     String password;
 
-    Set<String> authorityIds;
+    Set<String> authorities;
 
     String phone;
 }

@@ -59,9 +59,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@Valid @RequestBody LoginRequest loginRequest) {
-
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                 loginRequest.getUsername(), loginRequest.getPassword());
+        log.info("authenticationToken: {}", authenticationToken);
 
         // Authenticate the user
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -71,11 +71,11 @@ public class AuthController {
 
         // Prepare the login response
         LoginResponse loginResponse = new LoginResponse();
-        UserAuthResponse currentUserDB = userServiceClient.handleGetUserByUsernameOrEmailOrPhone(loginRequest.getUsername())
+        UserAuthResponse currentUserDB = userServiceClient.handleGetUserByLoginInput(loginRequest.getUsername())
                 .getResult();
 
-        Set<Role> authorities = currentUserDB.getAuthorityIds().stream()
-				.map(roleRepository::findById)
+        Set<Role> authorities = currentUserDB.getAuthorities().stream()
+				.map(roleRepository::findByAuthority)
 				.filter(Optional::isPresent)
 				.map(Optional::get)
 				.collect(Collectors.toSet());
@@ -128,8 +128,8 @@ public class AuthController {
         LoginResponse.UserLogin userLogin = new LoginResponse.UserLogin();
         LoginResponse.UserGetAccount userGetAccount = new LoginResponse.UserGetAccount();
 
-        Set<Role> authorities = currentUserDB.getAuthorityIds().stream()
-				.map(roleRepository::findById)
+        Set<Role> authorities = currentUserDB.getAuthorities().stream()
+				.map(roleRepository::findByAuthority)
 				.filter(Optional::isPresent)
 				.map(Optional::get)
 				.collect(Collectors.toSet());
@@ -167,8 +167,8 @@ public class AuthController {
         // issue new token / set refresh token as cookies
         LoginResponse res = new LoginResponse();
 
-        Set<Role> authorities = currentUser.getAuthorityIds().stream()
-				.map(roleRepository::findById)
+        Set<Role> authorities = currentUser.getAuthorities().stream()
+				.map(roleRepository::findByAuthority)
 				.filter(Optional::isPresent)
 				.map(Optional::get)
 				.collect(Collectors.toSet());
@@ -247,7 +247,7 @@ public class AuthController {
     public ApiResponse<UserResponse> register(@Valid @RequestBody UserCreationRequest reqUser) {
         UserResponse resUser = userServiceClient.createUser(reqUser).getResult();
 
-		UserUpdateOtpRequest updateUser = new UserUpdateOtpRequest();
+		// UserUpdateOtpRequest updateUser = new UserUpdateOtpRequest();
 
         // String otp = OtpUtil.generateOtp(6);
         // updateUser.setOtp(otp);
@@ -271,7 +271,7 @@ public class AuthController {
 
     @PostMapping("/verify-otp")
     public ApiResponse<Void> verifyOtp(@RequestParam String email, @RequestParam String otp) {
-        UserAuthResponse user = userServiceClient.handleGetUserByUsernameOrEmailOrPhone(email)
+        UserAuthResponse user = userServiceClient.handleGetUserByLoginInput(email)
 			.getResult();
 
         boolean isVerified = userServiceClient.verifyOtp(user.getId(), otp).getResult();

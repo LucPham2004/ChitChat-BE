@@ -29,18 +29,21 @@ public class UserDetailsCustom implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         try {
-			UserAuthResponse userDto = userServiceClient.handleGetUserByUsernameOrEmailOrPhone(login).getResult();
+			UserAuthResponse userDto = userServiceClient.handleGetUserByLoginInput(login).getResult();
 
-			Set<SimpleGrantedAuthority> authorities = userDto.getAuthorityIds().stream()
-				.map(roleRepository::findById)
+			log.info("User found in user-service: {}", login);
+
+			Set<SimpleGrantedAuthority> authorities = userDto.getAuthorities().stream()
+				.map(roleRepository::findByAuthority)
 				.filter(Optional::isPresent)
 				.map(Optional::get)
 				.map(Role::getAuthority)
 				.map(SimpleGrantedAuthority::new)
 				.collect(Collectors.toSet());
 
+			log.info("User found with authorities in user-service: {}", login);
 			return new org.springframework.security.core.userdetails.User(
-					userDto.getEmail(),
+					login,
 					userDto.getPassword(),
 					authorities
 				);

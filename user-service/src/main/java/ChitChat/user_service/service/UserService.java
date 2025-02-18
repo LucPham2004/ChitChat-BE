@@ -2,9 +2,11 @@ package ChitChat.user_service.service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -110,6 +112,11 @@ public class UserService {
             throw new AppException(ErrorCode.ENTITY_EXISTED);
         }
         User user = userMapper.toUser(request);
+
+        Set<String> authorities = new HashSet<>();
+        authorities.add("USER");
+        user.setAuthorities(authorities);
+        
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         return userRepository.save(user);
@@ -209,10 +216,10 @@ public class UserService {
 
     // Get User by username/email/phone
     public User handleGetUserByUsernameOrEmailOrPhone(String loginInput) {
-        Optional<User> optionalUser = this.userRepository.findByEmail(loginInput);
+        Optional<User> optionalUser = this.userRepository.findByUsername(loginInput);
         log.info("login input: {}", loginInput);
         if (optionalUser.isEmpty()) {
-            optionalUser = userRepository.findByUsername(loginInput);
+            optionalUser = userRepository.findByEmail(loginInput);
         }
         if (optionalUser.isEmpty()) {
             optionalUser = userRepository.findByPhone(loginInput);
@@ -220,9 +227,14 @@ public class UserService {
         if (optionalUser.isEmpty()) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
-
+        System.out.println("optionalUser: " + optionalUser.get().toString());
         return optionalUser.get();
     }
+
+    public User handleGetUserByLoginInput(String loginInput) {
+        return userRepository.findByUsernameOrEmailOrPhone(loginInput)
+                .orElseThrow(() -> new AppException(ErrorCode.ENTITY_NOT_EXISTED));
+    }    
 
     public User getUserByEmail(String email) {
         Optional<User> optionalUser = this.userRepository.findByEmail(email);

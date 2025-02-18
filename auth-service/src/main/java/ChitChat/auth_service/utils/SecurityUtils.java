@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class SecurityUtils {
 
-    public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS512;
+    public static final MacAlgorithm JWT_ALGORITHM = MacAlgorithm.HS256;
     private final JwtEncoder jwtEncoder;
 
     @Value("${chitchat.jwt.base64-secret}")
