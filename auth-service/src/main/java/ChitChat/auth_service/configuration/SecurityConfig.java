@@ -1,5 +1,7 @@
 package ChitChat.auth_service.configuration;
 
+import java.util.List;
+
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -14,16 +16,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.nimbusds.jose.jwk.source.ImmutableSecret;
-import com.nimbusds.jose.util.Base64;
-
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.OctetSequenceKey;
 import ChitChat.auth_service.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 
@@ -67,25 +68,33 @@ public class SecurityConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(getSecretKey())
+        return NimbusJwtDecoder.withSecretKey(getSecretKey())
                 .macAlgorithm(SecurityUtils.JWT_ALGORITHM).build();
-        return token -> {
-            try {
-                return jwtDecoder.decode(token);
-            } catch (JwtException e) {
-                System.out.println(">>> JWT error: " + e.getMessage());
-                throw e;
-            }
-        };
     }
+
 
     @Bean
     public JwtEncoder jwtEncoder() {
-        return new NimbusJwtEncoder(new ImmutableSecret<>(getSecretKey()));
+        SecretKey key = getSecretKey();
+        return new NimbusJwtEncoder((jwkSelector, context) -> {
+            JWK jwk = new OctetSequenceKey.Builder(key)
+                    .algorithm(JWSAlgorithm.HS256)
+                    .build();
+            return List.of(jwk);
+        });
     }
 
+
     private SecretKey getSecretKey() {
-        byte[] keyBytes = Base64.from(jwtKey).decode();
-        return new SecretKeySpec(keyBytes, 0, keyBytes.length, SecurityUtils.JWT_ALGORITHM.getName());
+        try {
+            byte[] keyBytes = java.util.Base64.getDecoder().decode(jwtKey);
+            if (keyBytes.length != 32) {
+                throw new IllegalArgumentException("JWT key must be exactly 32 bytes for HS256.");
+            }
+            return new SecretKeySpec(keyBytes, 0, keyBytes.length, SecurityUtils.JWT_ALGORITHM.getName());
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            throw new IllegalArgumentException("Invalid base64 secret key", e);
+        }
     }
+    
 }

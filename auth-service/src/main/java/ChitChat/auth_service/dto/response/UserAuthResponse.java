@@ -24,4 +24,9 @@ public class UserAuthResponse {
      Set<String> authorities;
 
      String phone;
+     String avatarUrl;
+     String firstName;
+     String lastName;
+     String location;
+     String bio;
 }

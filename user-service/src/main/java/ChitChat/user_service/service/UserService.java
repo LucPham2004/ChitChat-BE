@@ -227,7 +227,7 @@ public class UserService {
         if (optionalUser.isEmpty()) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
-        System.out.println("optionalUser: " + optionalUser.get().toString());
+        log.info("optionalUser: " + optionalUser.get().toString());
         return optionalUser.get();
     }
 

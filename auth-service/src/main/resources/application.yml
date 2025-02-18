@@ -1,6 +1,6 @@
 
 chitchat:
   jwt:
-    base64-secret: cHJldmlvdXNjb25zdGFudGx5ZGl2aWRlYmFzZXBsYWludHJhdmVsZGlzaHdyYXBwZWQ=
+    base64-secret: MjbO8FU02FSIXzP8FwYoz5H7fxPWoXMPxyKjDBBMAYA=
     access-token-validity-in-seconds: 86400
     refresh-token-validity-in-seconds: 86400

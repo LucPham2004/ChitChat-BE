@@ -21,31 +21,34 @@ public class LoginResponse {
      @NoArgsConstructor
      public static class UserLogin {
 
+          private long id;
+          private String email;
+          private String username;
+          private String avatarUrl;
+          private String firstName;
+          private String lastName;
+          private String location;
+          private String bio;
+          private Set<Role> authorities;
+          
           public UserLogin(long id, String email, String username, Set<Role> authorities) {
                this.id = id;
                this.email = email;
                this.username = username;
                this.authorities = authorities;
           }
-
-          private long id;
-          private String email;
-          private String username;
-          private String location;
-          private String bio;
-          private boolean isActive;
-          private Set<Role> authorities;
-
-          public UserLogin(Long id, String email, String username, String location, String bio, 
-                              boolean isActive, Set<Role> authorities) {
+          
+          public UserLogin(long id, String email, String username, String avatarUrl, String firstName, String lastName,
+                    Set<Role> authorities) {
                this.id = id;
                this.email = email;
                this.username = username;
-               this.location = location;
-               this.bio = bio;
-               this.isActive = isActive;
+               this.avatarUrl = avatarUrl;
+               this.firstName = firstName;
+               this.lastName = lastName;
                this.authorities = authorities;
           }
+
      }
 
      @Data

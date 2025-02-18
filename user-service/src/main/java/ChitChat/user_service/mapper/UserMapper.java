@@ -72,6 +72,11 @@ public class UserMapper {
         userResponse.setPhone(user.getPhone());
         userResponse.setPassword(user.getPassword());
         userResponse.setAuthorities(user.getAuthorities());
+        userResponse.setFirstName(user.getFirstName());
+        userResponse.setLastName(user.getLastName());
+        userResponse.setLocation(user.getLocation());
+        userResponse.setAvatarUrl(user.getAvatarUrl());
+        userResponse.setBio(user.getBio());
 
         return userResponse;
     }

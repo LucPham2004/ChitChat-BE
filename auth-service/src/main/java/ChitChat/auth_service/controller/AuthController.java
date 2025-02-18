@@ -84,6 +84,11 @@ public class AuthController {
                 currentUserDB.getId(),
                 currentUserDB.getEmail(),
                 currentUserDB.getUsername(),
+                currentUserDB.getAvatarUrl(),
+                currentUserDB.getFirstName(),
+                currentUserDB.getLastName(),
+                currentUserDB.getLocation(),
+                currentUserDB.getBio(),
                 authorities);
         loginResponse.setUser(userLogin);
 
