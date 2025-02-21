@@ -1,5 +1,7 @@
 package ChitChat.user_service.mapper;
 
+import java.time.LocalDate;
+
 import org.springframework.stereotype.Component;
 
 import ChitChat.user_service.dto.request.UserCreationRequest;
@@ -7,6 +9,7 @@ import ChitChat.user_service.dto.response.UserAuthResponse;
 import ChitChat.user_service.dto.response.UserDTO;
 import ChitChat.user_service.dto.response.UserResponse;
 import ChitChat.user_service.entity.User;
+import ChitChat.user_service.enums.Gender;
 import ChitChat.user_service.repository.UserRepository;
 
 import lombok.AccessLevel;
@@ -27,8 +30,11 @@ public class UserMapper {
         user.setFirstName(request.getFirstName());
         user.setLastName(request.getLastName());
         user.setPhone(request.getPhone());
-        user.setDob(request.getDob());
-        user.setGender(request.getGender());
+        user.setDob(LocalDate.parse(request.getDob()));
+        user.setGender(request.getGender() == "Male" ? Gender.Male 
+            : request.getGender() == "Female" ? Gender.Female 
+            : Gender.Other);
+        user.setActive(true);
 
         return user;
     };

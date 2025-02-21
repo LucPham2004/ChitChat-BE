@@ -1,8 +1,5 @@
 package ChitChat.auth_service.dto.request;
 
-import java.time.Instant;
-
-import ChitChat.auth_service.entity.Gender;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -27,8 +24,8 @@ public class UserCreationRequest {
     String firstName;
     String lastName;
     String phone;
-    Instant dob;
+    String dob;
 
-    Gender gender;
+    String gender;
 
 }

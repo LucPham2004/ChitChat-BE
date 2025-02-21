@@ -13,7 +13,7 @@ services:
       - auth-service
       - user-service
       - chat-service
-      - notification-service
+      # - notification-service
     networks:
       - chat-network
 
@@ -71,23 +71,23 @@ services:
     networks:
       - chat-network
 
-  notification-service:
-    image: notification-service-image
-    build:
-      context: ./notification-service
-    container_name: notification-service
-    ports:
-      - "8083:8083"
-    volumes:
-      - ./src:/app/src
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-notification:3306/notificationdb
-      SPRING_DATASOURCE_USERNAME: myuser
-      SPRING_DATASOURCE_PASSWORD: mypassword
-    depends_on:
-      - mysql-notification
-    networks:
-      - chat-network
+  # notification-service:
+  #   image: notification-service-image
+  #   build:
+  #     context: ./notification-service
+  #   container_name: notification-service
+  #   ports:
+  #     - "8083:8083"
+  #   volumes:
+  #     - ./src:/app/src
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:mysql://mysql-notification:3306/notificationdb
+  #     SPRING_DATASOURCE_USERNAME: myuser
+  #     SPRING_DATASOURCE_PASSWORD: mypassword
+  #   depends_on:
+  #     - mysql-notification
+  #   networks:
+  #     - chat-network
 
 ########################################################----- MYSQL DATABASES-----###############################################
   # MySQL for auth-service
@@ -142,21 +142,21 @@ services:
       - chat-network
 
   # MySQL for notification-service
-  mysql-notification:
-    image: mysql:8.0.36
-    container_name: mysql-notification
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: notificationdb
-      MYSQL_USER: myuser
-      MYSQL_PASSWORD: mypassword
-    ports:
-      - "3310:3306"
-    volumes:
-      - mysql-notification-data:/var/lib/mysql
-    networks:
-      - chat-network
+  # mysql-notification:
+  #   image: mysql:8.0.36
+  #   container_name: mysql-notification
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: rootpassword
+  #     MYSQL_DATABASE: notificationdb
+  #     MYSQL_USER: myuser
+  #     MYSQL_PASSWORD: mypassword
+  #   ports:
+  #     - "3310:3306"
+  #   volumes:
+  #     - mysql-notification-data:/var/lib/mysql
+  #   networks:
+  #     - chat-network
 
 
 volumes:

@@ -1,6 +1,7 @@
 package ChitChat.user_service.dto.response;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Set;
 
 import ChitChat.user_service.enums.Gender;
@@ -29,7 +30,7 @@ public class UserResponse {
      String phone;
      String avatarUrl;
 
-     Instant dob;
+     LocalDate dob;
      Instant createdAt;
      Instant updatedAt;
      

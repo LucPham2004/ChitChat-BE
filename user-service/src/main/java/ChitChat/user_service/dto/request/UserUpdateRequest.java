@@ -1,7 +1,5 @@
 package ChitChat.user_service.dto.request;
 
-import java.time.Instant;
-
 import ChitChat.user_service.enums.Gender;
 import lombok.Data;
 
@@ -13,7 +11,7 @@ public class UserUpdateRequest {
 
     private String lastName;
 
-    private Instant dob; // date of birth
+    private String dob; // date of birth
 
     private Gender gender;
 

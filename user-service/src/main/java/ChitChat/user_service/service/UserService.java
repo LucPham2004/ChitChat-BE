@@ -2,6 +2,7 @@ package ChitChat.user_service.service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -103,12 +104,14 @@ public class UserService {
 
     // POST
     // Create user
+    @Transactional
     public User createUser(UserCreationRequest request) {
-        
-        if (userRepository.existsByUsername(request.getUsername())
-                || userRepository.existsByEmail(request.getEmail())
-                || userRepository.existsByPhone(request.getPhone())) {
-                    log.info("this username/email/phone is already taken");
+        log.info("request: " + request.toString() + " existsByUsername: " + userRepository.existsByUsername(request.getUsername()) + " existsByEmail: " + userRepository.existsByEmail(request.getEmail()) + " existsByPhone: " + userRepository.existsByPhone(request.getPhone()));
+        if (userRepository.existsByUsername(request.getUsername()) && request.getUsername() != null
+                || userRepository.existsByEmail(request.getEmail()) && request.getEmail() != null
+                || userRepository.existsByPhone(request.getPhone()) && request.getPhone() != null) {
+                    log.info("this username/email/phone is already taken: " + 
+                        request.getUsername() + "/" + request.getEmail() + "/" + request.getPhone());
             throw new AppException(ErrorCode.ENTITY_EXISTED);
         }
         User user = userMapper.toUser(request);
@@ -147,8 +150,8 @@ public class UserService {
             dbUser.setBio(reqUser.getBio());
         }
 
-        if (reqUser.getDob() != null && !reqUser.getDob().equals(dbUser.getDob())) {
-            dbUser.setDob(reqUser.getDob());
+        if (reqUser.getDob() != null && !LocalDate.parse(reqUser.getDob()).equals(dbUser.getDob())) {
+            dbUser.setDob(LocalDate.parse(reqUser.getDob()));
         }
 
         if (reqUser.getLocation() != null && !reqUser.getLocation().isEmpty()

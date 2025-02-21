@@ -1,6 +1,7 @@
 package ChitChat.user_service.entity;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Set;
 
 import ChitChat.user_service.enums.Gender;
@@ -36,7 +37,7 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -50,7 +51,7 @@ public class User {
 
     private String phone;
 
-    private Instant dob; // date of birth
+    private LocalDate dob; // date of birth
 
     @Enumerated(EnumType.STRING)
     private Gender gender;

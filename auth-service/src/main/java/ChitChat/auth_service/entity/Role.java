@@ -2,6 +2,8 @@ package ChitChat.auth_service.entity;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,5 +28,6 @@ public class Role {
     private String authority;
     
     // Users Many-to-Many
+    @JsonIgnore
     private Set<Long> userIds;
 }
