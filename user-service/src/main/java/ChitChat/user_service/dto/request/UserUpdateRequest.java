@@ -6,6 +6,8 @@ import lombok.Data;
 @Data
 public class UserUpdateRequest {
     private Long id;
+    
+    private String email;
 
     private String firstName;
 
@@ -18,6 +20,8 @@ public class UserUpdateRequest {
     private String bio;
 
     private String location;
+    
+    private String job;
     
     private String avatarUrl;
 }

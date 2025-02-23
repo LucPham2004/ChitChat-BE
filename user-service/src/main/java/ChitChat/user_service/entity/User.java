@@ -60,6 +60,8 @@ public class User {
 
     private String location;
 
+    private String job;
+
     @Column(name = "avatar_url")
     private String avatarUrl;
 

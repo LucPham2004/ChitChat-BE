@@ -19,16 +19,16 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level=AccessLevel.PRIVATE)
 public class UserResponse {
      Long id;
-
-     String username;
      String email;
-
-     Set<String> authorities;
-
+     String username;
+     String avatarUrl;
      String firstName;
      String lastName;
+     String location;
+     String bio;
+     String job;
+     Set<String> authorities;
      String phone;
-     String avatarUrl;
 
      LocalDate dob;
      Instant createdAt;

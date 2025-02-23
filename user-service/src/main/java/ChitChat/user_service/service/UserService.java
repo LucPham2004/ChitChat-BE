@@ -149,6 +149,11 @@ public class UserService {
                 && !reqUser.getBio().equals(dbUser.getBio())) {
             dbUser.setBio(reqUser.getBio());
         }
+        
+        if (reqUser.getJob() != null && !reqUser.getJob().isEmpty()
+                && !reqUser.getJob().equals(dbUser.getJob())) {
+            dbUser.setBio(reqUser.getJob());
+        }
 
         if (reqUser.getDob() != null && !LocalDate.parse(reqUser.getDob()).equals(dbUser.getDob())) {
             dbUser.setDob(LocalDate.parse(reqUser.getDob()));
@@ -157,6 +162,11 @@ public class UserService {
         if (reqUser.getLocation() != null && !reqUser.getLocation().isEmpty()
                 && !reqUser.getLocation().equals(dbUser.getLocation())) {
             dbUser.setLocation(reqUser.getLocation());
+        }
+        
+        if (reqUser.getAvatarUrl() != null && !reqUser.getAvatarUrl().isEmpty()
+                && !reqUser.getAvatarUrl().equals(dbUser.getAvatarUrl())) {
+            dbUser.setLocation(reqUser.getAvatarUrl());
         }
 
         return this.userRepository.save(dbUser);
@@ -230,7 +240,6 @@ public class UserService {
         if (optionalUser.isEmpty()) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
-        log.info("optionalUser: " + optionalUser.get().toString());
         return optionalUser.get();
     }
 
