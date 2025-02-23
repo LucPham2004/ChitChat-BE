@@ -21,6 +21,9 @@ public class ConversationMapper {
         return Conversation.builder()
             .name(conversationRequest.getName())
             .description(conversationRequest.getDescription())
+            .avatarUrl(conversationRequest.getAvatarUrl() != null && !conversationRequest.isGroup() ? 
+                conversationRequest.getAvatarUrl() : "/user_default.avif")
+            .avatarPublicId(conversationRequest.getAvatarPublicId())
             .color(conversationRequest.getColor())
             .emoji(conversationRequest.getEmoji())
             .participantIds(conversationRequest.getParticipantIds())
@@ -45,6 +48,9 @@ public class ConversationMapper {
             .id(conversation.getId())
             .name(conversation.getName())
             .lastMessage(conversation.getLastMessage())
+            .avatarUrl(conversation.getAvatarUrl() != null && !conversation.isGroup() ? 
+                conversation.getAvatarUrl() : "/user_default.avif")
+            .avatarPublicId(conversation.getAvatarPublicId())
             .ownerId(conversation.getOwnerId())
             .participantIds(conversation.getParticipantIds())
             .isGroup(conversation.isGroup())
@@ -57,6 +63,9 @@ public class ConversationMapper {
             .id(conversation.getId())
             .name(conversation.getName())
             .description(conversation.getDescription())
+            .avatarUrl(conversation.getAvatarUrl() != null && !conversation.isGroup() ? 
+                conversation.getAvatarUrl() : "/user_default.avif")
+            .avatarPublicId(conversation.getAvatarPublicId())
             .color(conversation.getColor())
             .emoji(conversation.getEmoji())
             .lastMessage(conversation.getLastMessage())

@@ -22,6 +22,8 @@ public class UserUpdateRequest {
     private String location;
     
     private String job;
+
+    private String avatarPublicId;
     
     private String avatarUrl;
 }

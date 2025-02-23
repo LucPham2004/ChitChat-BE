@@ -1,5 +1,7 @@
 package ChitChat.chat_service.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -49,6 +51,14 @@ public class ConversationService {
 
     public Conversation createConversation(ConversationRequest conversationRequest) {
         return conversationRepository.save(conversationMapper.toConversation(conversationRequest));
+    }
+
+    public List<Conversation> createManyConversations(List<ConversationRequest> conversationRequests) {
+        List<Conversation> newConversations = conversationRequests.stream()
+            .map(conversationMapper::toConversation)
+            .map(conversationRepository::save)
+            .toList();
+        return newConversations;
     }
 
     // PUT METHODS

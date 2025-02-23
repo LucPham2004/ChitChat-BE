@@ -19,6 +19,8 @@ public class ConversationShortResponse {
     Long id;
     String name;
     String lastMessage;
+    String avatarUrl;
+    String avatarPublicId;
 
     Long ownerId;
     Set<Long> participantIds;

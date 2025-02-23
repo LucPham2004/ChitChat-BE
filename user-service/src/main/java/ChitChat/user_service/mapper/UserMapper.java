@@ -48,7 +48,8 @@ public class UserMapper {
         userResponse.setFirstName(user.getFirstName());
         userResponse.setLastName(user.getLastName());
         userResponse.setPhone(user.getPhone());
-        userResponse.setAvatarUrl(user.getAvatarUrl());
+        userResponse.setAvatarUrl(user.getAvatarUrl() != null ? user.getAvatarUrl() : "/user_default.avif");
+        userResponse.setAvatarPublicId(user.getAvatarPublicId());
         userResponse.setBio(user.getBio());
         userResponse.setLocation(user.getLocation());
         userResponse.setJob(user.getJob());
@@ -64,6 +65,8 @@ public class UserMapper {
     public UserDTO toUserDTO(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
+        userDTO.setAvatarUrl(user.getAvatarUrl() != null ? user.getAvatarUrl() : "/user_default.avif");
+        userDTO.setAvatarPublicId(user.getAvatarPublicId());
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
         userDTO.setLocation(user.getLocation());

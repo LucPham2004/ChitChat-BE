@@ -61,6 +61,9 @@ public class User {
     private String location;
 
     private String job;
+    
+    @Column(name = "avatar_public_id")
+    private String avatarPublicId;
 
     @Column(name = "avatar_url")
     private String avatarUrl;

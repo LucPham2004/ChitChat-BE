@@ -21,6 +21,7 @@ public class UserResponse {
      Long id;
      String email;
      String username;
+     String avatarPublicId;
      String avatarUrl;
      String firstName;
      String lastName;

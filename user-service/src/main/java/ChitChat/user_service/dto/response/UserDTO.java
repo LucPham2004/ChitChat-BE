@@ -18,6 +18,7 @@ public class UserDTO {
     String lastName;
     String location;
     String job;
+    String avatarPublicId;
     String avatarUrl;
     boolean isFriend;
     int friendNum;

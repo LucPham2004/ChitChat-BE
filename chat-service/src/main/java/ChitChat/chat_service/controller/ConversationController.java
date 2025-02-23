@@ -1,5 +1,7 @@
 package ChitChat.chat_service.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -79,6 +81,20 @@ public class ConversationController {
             .result(conversationMapper.toConversationResponse(newConversation))
             .build();
     }
+    
+    @PostMapping("/create/many")
+    public ApiResponse<List<ConversationResponse>> createConversations(@RequestBody List<ConversationRequest> conversationRequests) {
+        List<Conversation> newConversations = conversationService.createManyConversations(conversationRequests);
+
+        return ApiResponse.<List<ConversationResponse>>builder()
+            .code(1000)
+            .message("Create conversations successfully")
+            .result(newConversations.stream()
+                .map(conversationMapper::toConversationResponse)
+                .toList())
+            .build();
+    }
+
     
     // PUT METHODS
 

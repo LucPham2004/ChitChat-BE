@@ -21,6 +21,8 @@ public class ConversationRequest {
     String description;
     String color;
     String emoji;
+    String avatarPublicId;
+    String avatarUrl;
 
     Set<Long> participantIds;
     Long ownerId;
