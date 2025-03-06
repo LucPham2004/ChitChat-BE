@@ -66,6 +66,8 @@ public class Conversation {
 
     private String lastMessage;
 
+    private LocalDateTime lastMessageTime;
+
     // Flags
 
     private boolean isGroup;

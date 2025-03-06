@@ -53,6 +53,20 @@ public class MessageController {
             .build();
     }
 
+    // Send message
+    // @PutMapping("/send")
+    // public ApiResponse<ChatResponse> sendMessage(
+    //             @RequestParam Long senderId,
+    //             @RequestParam Long receiverId,
+    //             @RequestParam String content) {
+    //     Message message = service.sendMessage(senderId, receiverId, content);
+    //     return ApiResponse.<ChatResponse>builder()
+    //         .code(1000)
+    //         .message("Send message successfully!")
+    //         .result(chatMapper.toResponse(message))
+    //         .build();
+    // }
+
     // Delete message
     @DeleteMapping("/delete/{messageId}")
     public ApiResponse<Void> deleteMessage(@PathVariable Long messageId) {

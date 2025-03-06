@@ -1,11 +1,14 @@
 package ChitChat.chat_service.mapper;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Component;
 
 import ChitChat.chat_service.dto.request.ConversationRequest;
 import ChitChat.chat_service.dto.response.ConversationResponse;
 import ChitChat.chat_service.dto.response.ConversationShortResponse;
 import ChitChat.chat_service.entity.Conversation;
+import ChitChat.chat_service.entity.Message;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -29,6 +32,7 @@ public class ConversationMapper {
             .participantIds(conversationRequest.getParticipantIds())
             .ownerId(conversationRequest.getOwnerId())
             .lastMessage(conversationRequest.getLastMessage())
+            .lastMessageTime(LocalDateTime.parse(conversationRequest.getLastMessageTime()))
             .isGroup(conversationRequest.isGroup())
             .isRead(conversationRequest.isRead())
             .isMuted(conversationRequest.isMuted())
@@ -44,10 +48,15 @@ public class ConversationMapper {
     }
 
     public ConversationShortResponse toConversationShortResponse(Conversation conversation) {
+        Message message = conversation.getMessages().stream()
+            .max((m1, m2) -> m1.getCreatedAt().compareTo(m2.getCreatedAt()))
+            .orElse(null);
+
         return ConversationShortResponse.builder()
             .id(conversation.getId())
             .name(conversation.getName())
             .lastMessage(conversation.getLastMessage())
+            .lastMessageTime(message != null ? message.getCreatedAt() : null)
             .avatarUrl(conversation.getAvatarUrl() != null && !conversation.isGroup() ? 
                 conversation.getAvatarUrl() : "/user_default.avif")
             .avatarPublicId(conversation.getAvatarPublicId())
@@ -59,6 +68,10 @@ public class ConversationMapper {
     }
 
     public ConversationResponse toConversationResponse(Conversation conversation) {
+        Message message = conversation.getMessages().stream()
+            .max((m1, m2) -> m1.getCreatedAt().compareTo(m2.getCreatedAt()))
+            .orElse(null);
+
         return ConversationResponse.builder()
             .id(conversation.getId())
             .name(conversation.getName())
@@ -69,6 +82,7 @@ public class ConversationMapper {
             .color(conversation.getColor())
             .emoji(conversation.getEmoji())
             .lastMessage(conversation.getLastMessage())
+            .lastMessageTime(message != null ? message.getCreatedAt() : null)
             .ownerId(conversation.getOwnerId())
             .participantIds(conversation.getParticipantIds())
             .isGroup(conversation.isGroup())

@@ -4,7 +4,9 @@ import org.springframework.stereotype.Component;
 
 import ChitChat.chat_service.dto.request.ChatRequest;
 import ChitChat.chat_service.dto.response.ChatResponse;
+import ChitChat.chat_service.entity.ChatMessage;
 import ChitChat.chat_service.entity.Message;
+import ChitChat.chat_service.entity.MessageStatus;
 import ChitChat.chat_service.service.UserServiceClient;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,16 +28,17 @@ public class MessageMapper {
         return message;
     }
 
-    // public Message toMessage(ChatMessage request) {
-    //     Message message = new Message();
-    //     message.setContent(request.getContent());
-    //     message.setUrl(request.getUrl());
-    //     message.setReceiver(userServiceClient.findById(request.getReceiverId()).get());
-    //     message.setSender(userServiceClient.findById(request.getSenderId()).get());
-    //     message.setRead(false);
+    public Message toMessage(ChatMessage request) {
+        Message message = new Message();
+        message.setContent(request.getContent());
+        message.setUrl(request.getUrl());
+        message.setSenderId(request.getSenderId());
+        message.setReceiverIds(request.getReceiverId());
+        message.setStatus(MessageStatus.DELIVERED);
+        message.setRead(false);
 
-    //     return message;
-    // }
+        return message;
+    }
 
     public ChatResponse toResponse(Message message) {
         ChatResponse response = new ChatResponse();

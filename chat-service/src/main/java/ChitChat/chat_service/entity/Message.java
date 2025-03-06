@@ -39,6 +39,10 @@ public class Message {
 
     private String content;
 
+    private String url;
+    
+    private MessageStatus status;
+
     @Column(name = "is_read")
     private boolean isRead;
 
@@ -52,6 +56,8 @@ public class Message {
 
     // ManyToOne with User
     private Long senderId;
+    
+    private Set<Long> receiverIds;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conversation_id")

@@ -1,5 +1,6 @@
 package ChitChat.chat_service.dto.response;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import lombok.AccessLevel;
@@ -22,6 +23,7 @@ public class ConversationResponse {
     String color;
     String emoji;
     String lastMessage;
+    LocalDateTime lastMessageTime;
     String avatarUrl;
     String avatarPublicId;
 

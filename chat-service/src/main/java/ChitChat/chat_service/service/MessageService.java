@@ -6,9 +6,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import ChitChat.chat_service.dto.UserMessageDTO;
+import ChitChat.chat_service.entity.ChatMessage;
 import ChitChat.chat_service.entity.Message;
 import ChitChat.chat_service.exception.AppException;
 import ChitChat.chat_service.exception.ErrorCode;
+import ChitChat.chat_service.mapper.MessageMapper;
 import ChitChat.chat_service.repository.ConversationRepository;
 import ChitChat.chat_service.repository.MessageRepository;
 import lombok.AccessLevel;
@@ -21,6 +23,7 @@ import lombok.experimental.FieldDefaults;
 public class MessageService {
 
     MessageRepository messageRepository;
+    MessageMapper messageMapper;
     ConversationRepository conversationRepository;
     UserServiceClient userServiceClient;
 
@@ -48,9 +51,11 @@ public class MessageService {
     }
 
     // Send Message
-    // public Message saveMessage(Message message) {
-    //     return messageRepository.save(message);
-    // }
+    public Message saveMessage(ChatMessage message) {
+        return messageRepository.save(messageMapper.toMessage(message));
+    }
+
+
 
     // Delete Message
     public void deleteMessage(Long messageId) {

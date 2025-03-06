@@ -28,6 +28,7 @@ public class ConversationRequest {
     Long ownerId;
 
     String lastMessage;
+    String lastMessageTime;
 
     boolean isGroup;
     boolean isRead;
