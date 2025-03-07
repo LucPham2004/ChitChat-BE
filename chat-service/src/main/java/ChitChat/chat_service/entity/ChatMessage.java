@@ -16,6 +16,7 @@ import lombok.Setter;
 public class ChatMessage { 
     private MessageStatus status;
     private String content; 
+    private Long conversationId;
     private Long senderId;
     private Set<Long> receiverId;
     private String url;

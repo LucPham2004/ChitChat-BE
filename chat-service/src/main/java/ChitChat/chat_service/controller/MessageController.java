@@ -5,10 +5,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ChitChat.chat_service.dto.request.ChatRequest;
 import ChitChat.chat_service.dto.response.ApiResponse;
 import ChitChat.chat_service.dto.response.ChatResponse;
 import ChitChat.chat_service.entity.Message;
@@ -66,6 +68,15 @@ public class MessageController {
     //         .result(chatMapper.toResponse(message))
     //         .build();
     // }
+
+    @PutMapping("/send")
+    public ApiResponse<Void> sendMessage(@RequestBody ChatRequest request) {
+        service.sendMessage(request);
+        return ApiResponse.<Void>builder()
+            .code(1000)
+            .message("Send message successfully!")
+            .build();
+    }
 
     // Delete message
     @DeleteMapping("/delete/{messageId}")

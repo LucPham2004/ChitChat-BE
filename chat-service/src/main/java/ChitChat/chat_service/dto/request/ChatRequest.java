@@ -1,5 +1,7 @@
 package ChitChat.chat_service.dto.request;
 
+import java.util.Set;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +16,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level=AccessLevel.PRIVATE)
 public class ChatRequest {
     Long id;
+    Long conversationId;
     Long senderId;
-    Long recipientId;
+    Set<Long> recipientId;
     String content;
     String url;
 }
