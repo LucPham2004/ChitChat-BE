@@ -44,7 +44,7 @@ public class ConversationController {
         return ApiResponse.<Page<ConversationShortResponse>>builder()
             .code(1000)
             .message("Get conversations by participant with id: " + userId + " successfully")
-            .result(conversations.map(conversationMapper::toConversationShortResponse))
+            .result(conversations.map(conv -> conversationMapper.toConversationShortResponse(conv, userId)))
             .build();
     }
 
@@ -56,17 +56,17 @@ public class ConversationController {
         return ApiResponse.<Page<ConversationShortResponse>>builder()
             .code(1000)
             .message("Get conversations by owner with id: " + userId + " successfully")
-            .result(conversations.map(conversationMapper::toConversationShortResponse))
+            .result(conversations.map(conv -> conversationMapper.toConversationShortResponse(conv, userId)))
             .build();
     }
 
-    @GetMapping("/get/{id}")
-    public ApiResponse<ConversationResponse> getConversationById(@PathVariable Long id) {
-        Conversation conversation = conversationService.getById(id);
+    @GetMapping("/get/{convId}/{userId}")
+    public ApiResponse<ConversationResponse> getConversationById(@PathVariable Long convId, @PathVariable Long userId) {
+        Conversation conversation = conversationService.getById(convId);
         return ApiResponse.<ConversationResponse>builder()
             .code(1000)
-            .message("Get conversation by id: " + id + " successfully")
-            .result(conversationMapper.toConversationResponse(conversation))
+            .message("Get conversation by id: " + convId + " successfully")
+            .result(conversationMapper.toConversationResponse(conversation, userId))
             .build();
     }
 
@@ -78,7 +78,7 @@ public class ConversationController {
         return ApiResponse.<ConversationResponse>builder()
             .code(1000)
             .message("Create conversation successfully")
-            .result(conversationMapper.toConversationResponse(newConversation))
+            .result(conversationMapper.toConversationResponse(newConversation, conversationRequest.getOwnerId()))
             .build();
     }
     
@@ -90,7 +90,7 @@ public class ConversationController {
             .code(1000)
             .message("Create conversations successfully")
             .result(newConversations.stream()
-                .map(conversationMapper::toConversationResponse)
+                .map(conversation -> conversationMapper.toConversationResponse(conversation, conversationRequests.get(0).getOwnerId()))
                 .toList())
             .build();
     }
@@ -104,7 +104,7 @@ public class ConversationController {
         return ApiResponse.<ConversationResponse>builder()
             .code(1000)
             .message("Update conversation successfully")
-            .result(conversationMapper.toConversationResponse(updatedConversation))
+            .result(conversationMapper.toConversationResponse(updatedConversation, conversationRequest.getOwnerId()))
             .build();
     }
 

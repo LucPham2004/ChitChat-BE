@@ -5,12 +5,13 @@ import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import ChitChat.chat_service.dto.request.ChatRequest;
-import ChitChat.chat_service.dto.response.ChatResponse;
 import ChitChat.chat_service.dto.response.UserResponse;
+import ChitChat.chat_service.entity.Conversation;
 import ChitChat.chat_service.entity.Message;
 import ChitChat.chat_service.exception.AppException;
 import ChitChat.chat_service.exception.ErrorCode;
@@ -47,7 +48,8 @@ public class MessageService {
         if(!conversationRepository.existsById(conversationId)) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
-        Pageable pageable = PageRequest.of(pageNum, MESSAGES_PER_PAGE);
+        // Get nearest messages by conversation
+        Pageable pageable = PageRequest.of(pageNum, MESSAGES_PER_PAGE, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         return messageRepository.findByConversationId(conversationId, pageable);
     }
@@ -63,16 +65,21 @@ public class MessageService {
     }
 
     // Send Message
-    public ChatResponse sendMessage(ChatRequest chatRequest) {
-        if(!conversationRepository.existsById(chatRequest.getConversationId())) {
+    public void sendMessage(ChatRequest chatRequest) {
+        Conversation conversation = conversationRepository.findById(chatRequest.getConversationId()).get();
+        if(conversation == null) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
+        Message message = messageMapper.toMessage(chatRequest);
+        messageRepository.save(message);
+        conversation.setLastMessage(message.getContent());
+        conversation.setLastMessageTime(message.getCreatedAt());
+        conversationRepository.save(conversation);
+
         Set<Long> receiverIds = chatRequest.getRecipientId();
-        
         for (Long receiverId : receiverIds) {
             template.convertAndSend("/topic/" + receiverId, chatRequest);
         }
-        return messageMapper.toResponse(messageRepository.save(messageMapper.toMessage(chatRequest))); // Maybe return void
     }
 
     // Delete Message
