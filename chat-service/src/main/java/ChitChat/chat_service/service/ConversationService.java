@@ -35,11 +35,11 @@ public class ConversationService {
         return conversationRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ENTITY_NOT_EXISTED));
     }
 
-    // public Page<Conversation> getByParticipantIds(Long userId, int pageNum) {
-    //     Pageable pageable = PageRequest.of(pageNum, CONVERSATIONS_PER_PAGE);
+    public Page<Conversation> getByParticipantId(Long userId, int pageNum) {
+        Pageable pageable = PageRequest.of(pageNum, CONVERSATIONS_PER_PAGE);
 
-    //     return conversationRepository.findByParticipantIds(userId, pageable);
-    // }
+        return conversationRepository.findByParticipantIdsContaining(userId, pageable);
+    }
 
     public Page<Conversation> getByOwnerId(Long userId, int pageNum) {
         Pageable pageable = PageRequest.of(pageNum, CONVERSATIONS_PER_PAGE);

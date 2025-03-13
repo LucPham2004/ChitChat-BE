@@ -1,20 +1,22 @@
 package ChitChat.chat_service.service;
 
+import java.util.Set;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import ChitChat.chat_service.dto.UserMessageDTO;
 import ChitChat.chat_service.dto.request.ChatRequest;
+import ChitChat.chat_service.dto.response.ChatResponse;
+import ChitChat.chat_service.dto.response.UserResponse;
 import ChitChat.chat_service.entity.Message;
 import ChitChat.chat_service.exception.AppException;
 import ChitChat.chat_service.exception.ErrorCode;
 import ChitChat.chat_service.mapper.MessageMapper;
 import ChitChat.chat_service.repository.ConversationRepository;
 import ChitChat.chat_service.repository.MessageRepository;
-import ChitChat.chat_service.utils.KafkaConstants;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -28,7 +30,7 @@ public class MessageService {
     MessageMapper messageMapper;
     ConversationRepository conversationRepository;
     UserServiceClient userServiceClient;
-    KafkaTemplate<String, Message> kafkaTemplate;
+    SimpMessagingTemplate template;
 
     static int MESSAGES_PER_PAGE = 20;
 
@@ -51,7 +53,7 @@ public class MessageService {
     }
 
     public Page<Message> getUserMessages(Long senderId, int pageNum) {
-        UserMessageDTO user = userServiceClient.getUserById(senderId).getResult();
+        UserResponse user = userServiceClient.getUserById(senderId).getResult();
         if(user == null) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
@@ -61,12 +63,16 @@ public class MessageService {
     }
 
     // Send Message
-    public void sendMessage(ChatRequest chatRequest) {
-        Message message = messageRepository.save(messageMapper.toMessage(chatRequest)); 
-
-        kafkaTemplate.send(KafkaConstants.KAFKA_TOPIC, 
-                           String.valueOf(chatRequest.getConversationId()), 
-                           message);
+    public ChatResponse sendMessage(ChatRequest chatRequest) {
+        if(!conversationRepository.existsById(chatRequest.getConversationId())) {
+            throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
+        }
+        Set<Long> receiverIds = chatRequest.getRecipientId();
+        
+        for (Long receiverId : receiverIds) {
+            template.convertAndSend("/topic/" + receiverId, chatRequest);
+        }
+        return messageMapper.toResponse(messageRepository.save(messageMapper.toMessage(chatRequest))); // Maybe return void
     }
 
     // Delete Message

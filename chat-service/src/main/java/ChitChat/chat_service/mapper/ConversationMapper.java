@@ -1,6 +1,7 @@
 package ChitChat.chat_service.mapper;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
@@ -32,7 +33,9 @@ public class ConversationMapper {
             .participantIds(conversationRequest.getParticipantIds())
             .ownerId(conversationRequest.getOwnerId())
             .lastMessage(conversationRequest.getLastMessage())
-            .lastMessageTime(LocalDateTime.parse(conversationRequest.getLastMessageTime()))
+            .lastMessageTime(conversationRequest.getLastMessageTime() != null ?
+                LocalDateTime.parse(conversationRequest.getLastMessageTime()) : null
+                )
             .isGroup(conversationRequest.isGroup())
             .isRead(conversationRequest.isRead())
             .isMuted(conversationRequest.isMuted())
@@ -48,15 +51,21 @@ public class ConversationMapper {
     }
 
     public ConversationShortResponse toConversationShortResponse(Conversation conversation) {
-        Message message = conversation.getMessages().stream()
-            .max((m1, m2) -> m1.getCreatedAt().compareTo(m2.getCreatedAt()))
-            .orElse(null);
+        Set<Message> message = conversation.getMessages();
+        Message lastMessage = new Message();
+        if(message != null) {
+            if(message.size() > 0) {
+                lastMessage = message.stream()
+                    .max((m1, m2) -> m1.getCreatedAt().compareTo(m2.getCreatedAt()))
+                    .orElse(null);
+            }
+        }
 
         return ConversationShortResponse.builder()
             .id(conversation.getId())
             .name(conversation.getName())
-            .lastMessage(conversation.getLastMessage())
-            .lastMessageTime(message != null ? message.getCreatedAt() : null)
+            .lastMessage(lastMessage != null ? lastMessage.getContent() : null)
+            .lastMessageTime(lastMessage != null ? lastMessage.getCreatedAt() : null)
             .avatarUrl(conversation.getAvatarUrl() != null && !conversation.isGroup() ? 
                 conversation.getAvatarUrl() : "/user_default.avif")
             .avatarPublicId(conversation.getAvatarPublicId())
@@ -68,9 +77,15 @@ public class ConversationMapper {
     }
 
     public ConversationResponse toConversationResponse(Conversation conversation) {
-        Message message = conversation.getMessages().stream()
-            .max((m1, m2) -> m1.getCreatedAt().compareTo(m2.getCreatedAt()))
-            .orElse(null);
+        Set<Message> message = conversation.getMessages();
+        Message lastMessage = new Message();
+        if(message != null) {
+            if(message.size() > 0) {
+                lastMessage = message.stream()
+                    .max((m1, m2) -> m1.getCreatedAt().compareTo(m2.getCreatedAt()))
+                    .orElse(null);
+            }
+        }
 
         return ConversationResponse.builder()
             .id(conversation.getId())
@@ -81,8 +96,8 @@ public class ConversationMapper {
             .avatarPublicId(conversation.getAvatarPublicId())
             .color(conversation.getColor())
             .emoji(conversation.getEmoji())
-            .lastMessage(conversation.getLastMessage())
-            .lastMessageTime(message != null ? message.getCreatedAt() : null)
+            .lastMessage(lastMessage != null ? lastMessage.getContent() : null)
+            .lastMessageTime(lastMessage != null ? lastMessage.getCreatedAt() : null)
             .ownerId(conversation.getOwnerId())
             .participantIds(conversation.getParticipantIds())
             .isGroup(conversation.isGroup())

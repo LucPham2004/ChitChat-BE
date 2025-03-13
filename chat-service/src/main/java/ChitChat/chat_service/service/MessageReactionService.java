@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
 
-import ChitChat.chat_service.dto.UserMessageDTO;
+import ChitChat.chat_service.dto.response.UserResponse;
 import ChitChat.chat_service.entity.MessageReaction;
 import ChitChat.chat_service.exception.AppException;
 import ChitChat.chat_service.exception.ErrorCode;
@@ -30,7 +30,7 @@ public class MessageReactionService {
 
     // Create Message Reaction
     public MessageReaction createMessageReaction(Long userId, Long MessageId) {
-        UserMessageDTO user = userServiceClient.getUserById(userId).getResult();
+        UserResponse user = userServiceClient.getUserById(userId).getResult();
         if(user == null) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
@@ -49,7 +49,7 @@ public class MessageReactionService {
 
     // Delete Message Reaction
     public void deleteMessageReaction(Long userId, Long MessageId) {
-        UserMessageDTO user = userServiceClient.getUserById(userId).getResult();
+        UserResponse user = userServiceClient.getUserById(userId).getResult();
         if (!messageRepository.existsById(MessageId) || user == null) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }

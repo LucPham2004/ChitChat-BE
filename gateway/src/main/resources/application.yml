@@ -13,16 +13,8 @@ spring:
                 - "http://localhost:5172"
                 - "http://localhost:5173"
                 - "http://127.0.0.1:5173"
-              allowedMethods:
-                - GET
-                - POST
-                - PUT
-                - DELETE
-              allowedHeaders:
-                - Authorization
-                - Content-Type
-                - Accept
-                - x-no-retry
+              allowedMethods: "*"
+              allowedHeaders: "*"
               allowCredentials: true
 
       routes:
@@ -46,6 +38,13 @@ spring:
             - Path=/chat-service/**
           filters:
             - RewritePath=/chat-service/(?<path>.*), /$\{path}
+
+        - id: chat-service-ws
+          uri: ws://chat-service:8082
+          predicates:
+            - Path=/chat-service/ws/**
+          filters:
+            - StripPrefix=1
 
         - id: notification-service
           uri: http://notification-service:8083

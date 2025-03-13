@@ -23,9 +23,13 @@ public class MessageMapper {
     public Message toMessage(ChatRequest request) {
         Message message = new Message();
         message.setContent(request.getContent());
-        message.setSenderId(userServiceClient.getUserById(request.getSenderId()).getResult().getUserId());
+
+        message.setSenderId(userServiceClient.getUserById(request.getSenderId()).getResult().getId());
+        message.setReceiverIds(request.getRecipientId());
         message.setConversation(conversationRepository.findById(request.getConversationId()).get());
+        
         message.setRead(false);
+        message.setStatus(MessageStatus.DELIVERED);
 
         return message;
     }
@@ -45,9 +49,11 @@ public class MessageMapper {
 
     public ChatResponse toResponse(Message message) {
         ChatResponse response = new ChatResponse();
+        response.setId(message.getId());
         response.setContent(message.getContent());
         response.setConversationId(message.getConversation().getId());
         response.setSenderId(message.getSenderId());
+        response.setRecipientId(message.getReceiverIds());
         response.setIsRead(false);
         response.setCreatedAt(message.getCreatedAt());
         response.setUpdatedAt(message.getUpdatedAt());

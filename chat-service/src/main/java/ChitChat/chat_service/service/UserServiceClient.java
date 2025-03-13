@@ -4,13 +4,13 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import ChitChat.chat_service.dto.UserMessageDTO;
 import ChitChat.chat_service.dto.response.ApiResponse;
+import ChitChat.chat_service.dto.response.UserResponse;
 
-@FeignClient(name = "user-service", url = "http://localhost:8081")
+@FeignClient(name = "user-service", url = "http://gateway:8888/user-service/users")
 public interface UserServiceClient {
 	
-	@GetMapping("/get/{userId}")
-	ApiResponse<UserMessageDTO> getUserById(@PathVariable Long userId);
+	@GetMapping("/get/{id}")
+    ApiResponse<UserResponse> getUserById(@PathVariable Long id);
 }
 
