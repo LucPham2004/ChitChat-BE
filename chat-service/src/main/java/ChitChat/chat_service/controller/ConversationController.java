@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ChitChat.chat_service.dto.request.ConversationRequest;
 import ChitChat.chat_service.dto.response.ApiResponse;
+import ChitChat.chat_service.dto.response.ChatParticipants;
 import ChitChat.chat_service.dto.response.ConversationResponse;
 import ChitChat.chat_service.dto.response.ConversationShortResponse;
 import ChitChat.chat_service.entity.Conversation;
@@ -67,6 +68,16 @@ public class ConversationController {
             .code(1000)
             .message("Get conversation by id: " + convId + " successfully")
             .result(conversationMapper.toConversationResponse(conversation, userId))
+            .build();
+    }
+
+    @GetMapping("/get/{convId}")
+    public ApiResponse<List<ChatParticipants>> getParticipantsByConvId(@PathVariable Long convId) {
+        List<ChatParticipants> participants = conversationService.getParticipantsByConvId(convId);
+        return ApiResponse.<List<ChatParticipants>>builder()
+            .code(1000)
+            .message("Get conversation participants with id: " + convId + " successfully")
+            .result(participants)
             .build();
     }
 

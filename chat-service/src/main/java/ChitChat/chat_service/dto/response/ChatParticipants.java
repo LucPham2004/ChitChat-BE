@@ -1,9 +1,5 @@
 package ChitChat.chat_service.dto.response;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,19 +12,11 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @Builder
 @FieldDefaults(level=AccessLevel.PRIVATE)
-public class ConversationShortResponse {
-    
+public class ChatParticipants {
     Long id;
-    String name;
-    String lastMessage;
-    boolean isThisYourLastMessage;
-    LocalDateTime lastMessageTime;
-    List<String> avatarUrls;
+    String username;
     String avatarPublicId;
-
-    Long ownerId;
-    Set<Long> participantIds;
-    boolean isGroup;
-    boolean isRead;
-    
+    String avatarUrl;
+    String firstName;
+    String lastName;
 }

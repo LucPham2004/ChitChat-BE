@@ -61,7 +61,7 @@ public class Conversation {
 
     // Relationships
 
-    @ElementCollection  // Cần có annotation này!
+    @ElementCollection
     @CollectionTable(name = "conversation_participants", 
                      joinColumns = @JoinColumn(name = "conversation_id"))
     private Set<Long> participantIds;

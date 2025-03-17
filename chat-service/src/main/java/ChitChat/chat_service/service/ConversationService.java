@@ -1,5 +1,6 @@
 package ChitChat.chat_service.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -8,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import ChitChat.chat_service.dto.request.ConversationRequest;
+import ChitChat.chat_service.dto.response.ChatParticipants;
+import ChitChat.chat_service.dto.response.UserResponse;
 import ChitChat.chat_service.entity.Conversation;
 import ChitChat.chat_service.exception.AppException;
 import ChitChat.chat_service.exception.ErrorCode;
@@ -26,6 +29,7 @@ public class ConversationService {
     ConversationRepository conversationRepository;
     //MessageRepository messageRepository;
     ConversationMapper conversationMapper;
+    UserServiceClient userServiceClient;
     
     static int CONVERSATIONS_PER_PAGE = 20;
 
@@ -36,15 +40,45 @@ public class ConversationService {
     }
 
     public Page<Conversation> getByParticipantId(Long userId, int pageNum) {
+        if(userServiceClient.getUserById(userId).getResult() == null) {
+            throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
+        }
         Pageable pageable = PageRequest.of(pageNum, CONVERSATIONS_PER_PAGE);
 
         return conversationRepository.findByParticipantIdsContaining(userId, pageable);
     }
 
     public Page<Conversation> getByOwnerId(Long userId, int pageNum) {
+        if(userServiceClient.getUserById(userId).getResult() == null) {
+            throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
+        }
         Pageable pageable = PageRequest.of(pageNum, CONVERSATIONS_PER_PAGE);
 
         return conversationRepository.findByOwnerId(userId, pageable);
+    }
+
+    public List<ChatParticipants> getParticipantsByConvId(Long conversationId) {
+        Conversation conversation = conversationRepository.findById(conversationId)
+            .orElseThrow(() -> new AppException(ErrorCode.ENTITY_NOT_EXISTED));
+
+        List<ChatParticipants> list = new ArrayList<>();
+
+        for(Long userId: conversation.getParticipantIds()) {
+            UserResponse user = userServiceClient.getUserById(userId).getResult();
+            
+            ChatParticipants participant = ChatParticipants.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .avatarPublicId(user.getAvatarPublicId())
+                .avatarUrl(user.getAvatarUrl())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .build();
+
+            list.add(participant);
+        }
+        
+        return list;
     }
 
     // POST METHODS

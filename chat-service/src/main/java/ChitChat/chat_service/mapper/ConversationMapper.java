@@ -1,6 +1,9 @@
 package ChitChat.chat_service.mapper;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -12,6 +15,7 @@ import ChitChat.chat_service.dto.response.ConversationResponse;
 import ChitChat.chat_service.dto.response.ConversationShortResponse;
 import ChitChat.chat_service.dto.response.UserResponse;
 import ChitChat.chat_service.entity.Conversation;
+import ChitChat.chat_service.entity.Media;
 import ChitChat.chat_service.entity.Message;
 import ChitChat.chat_service.service.UserServiceClient;
 import lombok.AccessLevel;
@@ -57,16 +61,8 @@ public class ConversationMapper {
     }
 
     public ConversationShortResponse toConversationShortResponse(Conversation conversation, Long userId) {
-        Set<Message> message = conversation.getMessages();
-        Message lastMessage = new Message();
-        if(message != null) {
-            if(message.size() > 0) {
-                lastMessage = message.stream()
-                    .max((m1, m2) -> m1.getCreatedAt().compareTo(m2.getCreatedAt()))
-                    .orElse(null);
-            }
-        }
 
+        // Đặt tên conversation linh hoạt từng góc nhìn
         // Danh sách participant ngoại trừ userId
         List<Long> otherParticipants = conversation.getParticipantIds().stream()
         .filter(id -> !id.equals(userId))
@@ -75,7 +71,7 @@ public class ConversationMapper {
         String conversationName;
         if (conversation.isGroup()) {
             // Nếu là group chat -> lấy tên tất cả participants khác userId
-            List<String> participantNames = otherParticipants.stream()
+            List<String> participantNames = otherParticipants.stream().limit(3)
                 .map(id -> userServiceClient.getUserById(id).getResult().getFirstName())
                 .collect(Collectors.toList());
             conversationName = String.join(", ", participantNames);
@@ -83,18 +79,72 @@ public class ConversationMapper {
             // Nếu không phải group chat -> chỉ lấy tên của 1 người còn lại
             UserResponse user = userServiceClient.getUserById(otherParticipants.get(0)).getResult();
             conversationName = otherParticipants.isEmpty()
-                ? "Người dùng không tồn tại" // Trường hợp lỗi
+                ? "Người dùng không tồn tại"
                 : user.getFirstName() + " " + user.getLastName();
+        }
+
+        // Tin nhắn cuối
+        Set<Message> messages = conversation.getMessages();
+        Message lastMessage = null;
+        if (messages != null && !messages.isEmpty()) {
+            lastMessage = messages.stream()
+                .max(Comparator.comparing(Message::getCreatedAt))
+                .orElse(null);
+        }
+
+        String lastMessageContent = lastMessage != null ? lastMessage.getContent() : null;
+        if (lastMessage != null && lastMessageContent == null) {
+            Media lastMessagMedia = lastMessage.getMedias().stream()
+                .max(Comparator.comparing(Media::getCreatedAt))
+                .orElse(null);
+
+            if (lastMessagMedia != null) {
+                String url = lastMessagMedia.getUrl();
+                boolean isVideo = Arrays.asList(".mp4", ".webm", ".mov", ".avi", ".mkv")
+                    .stream().anyMatch(url::contains);
+
+                if (lastMessage.getSenderId().equals(userId)) {
+                    lastMessageContent = isVideo ? "Bạn đã gửi một video" : "Bạn đã gửi một ảnh";
+                } else {
+                    lastMessageContent = isVideo
+                        ? conversationName + " đã gửi một video"
+                        : conversationName + " đã gửi một ảnh";
+                }
+            }
+        }
+
+        // Lấy danh sách avatarUrls
+        String defaultAvatar = "/user_default.avif";
+        List<String> avatarUrls = new ArrayList<>();
+
+        if (conversation.getAvatarUrl() != null) {
+            avatarUrls.add(conversation.getAvatarUrl());
+        } else {
+            if (conversation.isGroup()) {
+                avatarUrls = otherParticipants.stream()
+                    .limit(4)
+                    .map(id -> {
+                        UserResponse user = userServiceClient.getUserById(id).getResult();
+                        return user.getAvatarUrl() != null ? user.getAvatarUrl() : defaultAvatar;
+                    })
+                    .collect(Collectors.toList());
+            } else {
+                if (!otherParticipants.isEmpty()) {
+                    UserResponse user = userServiceClient.getUserById(otherParticipants.get(0)).getResult();
+                    avatarUrls.add(user.getAvatarUrl() != null ? user.getAvatarUrl() : defaultAvatar);
+                } else {
+                    avatarUrls.add(defaultAvatar);
+                }
+            }
         }
 
         return ConversationShortResponse.builder()
             .id(conversation.getId())
             .name(conversationName)
-            .lastMessage(lastMessage != null ? lastMessage.getContent() : null)
+            .lastMessage(lastMessageContent)
             .isThisYourLastMessage(lastMessage != null && lastMessage.getSenderId().equals(userId))
             .lastMessageTime(lastMessage != null ? lastMessage.getCreatedAt() : null)
-            .avatarUrl(conversation.getAvatarUrl() != null && !conversation.isGroup() ? 
-                conversation.getAvatarUrl() : "/user_default.avif")
+            .avatarUrls(avatarUrls)
             .avatarPublicId(conversation.getAvatarPublicId())
             .ownerId(conversation.getOwnerId())
             .participantIds(conversation.getParticipantIds())
@@ -104,24 +154,17 @@ public class ConversationMapper {
     }
 
     public ConversationResponse toConversationResponse(Conversation conversation, Long userId) {
-        Set<Message> message = conversation.getMessages();
-        Message lastMessage = new Message();
-        if(message != null) {
-            if(message.size() > 0) {
-                lastMessage = message.stream()
-                    .max((m1, m2) -> m1.getCreatedAt().compareTo(m2.getCreatedAt()))
-                    .orElse(null);
-            }
-        }
+
+        // Đặt tên conversation linh hoạt từng góc nhìn
         // Danh sách participant ngoại trừ userId
         List<Long> otherParticipants = conversation.getParticipantIds().stream()
-        .filter(id -> !id.equals(userId))
-        .collect(Collectors.toList());
+            .filter(id -> !id.equals(userId))
+            .collect(Collectors.toList());
 
         String conversationName;
         if (conversation.isGroup()) {
             // Nếu là group chat -> lấy tên tất cả participants khác userId
-            List<String> participantNames = otherParticipants.stream()
+            List<String> participantNames = otherParticipants.stream().limit(3)
                 .map(id -> userServiceClient.getUserById(id).getResult().getFirstName())
                 .collect(Collectors.toList());
             conversationName = String.join(", ", participantNames);
@@ -129,16 +172,70 @@ public class ConversationMapper {
             // Nếu không phải group chat -> chỉ lấy tên của 1 người còn lại
             UserResponse user = userServiceClient.getUserById(otherParticipants.get(0)).getResult();
             conversationName = otherParticipants.isEmpty()
-                ? "Người dùng không tồn tại" // Trường hợp lỗi
+                ? "Người dùng không tồn tại"
                 : user.getFirstName() + " " + user.getLastName();
+        }
+
+        // Tin nhắn cuối conversation
+        Set<Message> messages = conversation.getMessages();
+        Message lastMessage = null;
+        if (messages != null && !messages.isEmpty()) {
+            lastMessage = messages.stream()
+                .max(Comparator.comparing(Message::getCreatedAt))
+                .orElse(null);
+        }
+
+        String lastMessageContent = lastMessage != null ? lastMessage.getContent() : null;
+        if (lastMessage != null && lastMessageContent == null) {
+            Media lastMessagMedia = lastMessage.getMedias().stream()
+                .max(Comparator.comparing(Media::getCreatedAt))
+                .orElse(null);
+
+            if (lastMessagMedia != null) {
+                String url = lastMessagMedia.getUrl();
+                boolean isVideo = Arrays.asList(".mp4", ".webm", ".mov", ".avi", ".mkv")
+                    .stream().anyMatch(url::contains);
+
+                if (lastMessage.getSenderId().equals(userId)) {
+                    lastMessageContent = isVideo ? "Bạn đã gửi một video" : "Bạn đã gửi một ảnh";
+                } else {
+                    lastMessageContent = isVideo
+                        ? conversationName + " đã gửi một video"
+                        : conversationName + " đã gửi một ảnh";
+                }
+            }
+        }
+
+        // Lấy danh sách avatarUrls
+        String defaultAvatar = "/user_default.avif";
+        List<String> avatarUrls = new ArrayList<>();
+
+        if (conversation.getAvatarUrl() != null) {
+            avatarUrls.add(conversation.getAvatarUrl());
+        } else {
+            if (conversation.isGroup()) {
+                avatarUrls = otherParticipants.stream()
+                    .limit(4)
+                    .map(id -> {
+                        UserResponse user = userServiceClient.getUserById(id).getResult();
+                        return user.getAvatarUrl() != null ? user.getAvatarUrl() : defaultAvatar;
+                    })
+                    .collect(Collectors.toList());
+            } else {
+                if (!otherParticipants.isEmpty()) {
+                    UserResponse user = userServiceClient.getUserById(otherParticipants.get(0)).getResult();
+                    avatarUrls.add(user.getAvatarUrl() != null ? user.getAvatarUrl() : defaultAvatar);
+                } else {
+                    avatarUrls.add(defaultAvatar);
+                }
+            }
         }
 
         return ConversationResponse.builder()
             .id(conversation.getId())
             .name(conversationName)
             .description(conversation.getDescription())
-            .avatarUrl(conversation.getAvatarUrl() != null && !conversation.isGroup() ? 
-                conversation.getAvatarUrl() : "/user_default.avif")
+            .avatarUrls(avatarUrls)
             .avatarPublicId(conversation.getAvatarPublicId())
             .color(conversation.getColor())
             .emoji(conversation.getEmoji())
