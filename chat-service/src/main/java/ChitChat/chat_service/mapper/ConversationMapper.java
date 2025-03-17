@@ -91,6 +91,7 @@ public class ConversationMapper {
             .id(conversation.getId())
             .name(conversationName)
             .lastMessage(lastMessage != null ? lastMessage.getContent() : null)
+            .isThisYourLastMessage(lastMessage != null && lastMessage.getSenderId().equals(userId))
             .lastMessageTime(lastMessage != null ? lastMessage.getCreatedAt() : null)
             .avatarUrl(conversation.getAvatarUrl() != null && !conversation.isGroup() ? 
                 conversation.getAvatarUrl() : "/user_default.avif")

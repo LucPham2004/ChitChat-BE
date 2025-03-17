@@ -1,10 +1,14 @@
 package ChitChat.chat_service.mapper;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.stereotype.Component;
 
 import ChitChat.chat_service.dto.request.ChatRequest;
 import ChitChat.chat_service.dto.response.ChatResponse;
 import ChitChat.chat_service.entity.ChatMessage;
+import ChitChat.chat_service.entity.Media;
 import ChitChat.chat_service.entity.Message;
 import ChitChat.chat_service.entity.MessageStatus;
 import ChitChat.chat_service.repository.ConversationRepository;
@@ -27,6 +31,8 @@ public class MessageMapper {
         message.setSenderId(userServiceClient.getUserById(request.getSenderId()).getResult().getId());
         message.setReceiverIds(request.getRecipientId());
         message.setConversation(conversationRepository.findById(request.getConversationId()).get());
+        message.setReactions(new HashSet<>());
+        message.setTags(new HashSet<>());
         
         message.setRead(false);
         message.setStatus(MessageStatus.DELIVERED);
@@ -57,6 +63,20 @@ public class MessageMapper {
         response.setIsRead(false);
         response.setCreatedAt(message.getCreatedAt());
         response.setUpdatedAt(message.getUpdatedAt());
+
+        Set<Media> medias = message.getMedias();
+        if (medias != null && !medias.isEmpty()) {
+            String[] publicIds = medias.stream()
+                .map(Media::getPublicId)
+                .toArray(String[]::new);
+
+            String[] urls = medias.stream()
+                .map(Media::getUrl)
+                .toArray(String[]::new);
+
+            response.setPublicIds(publicIds);
+            response.setUrls(urls);
+        }
 
         return response;
     }

@@ -20,8 +20,11 @@ public class ChatResponse {
     Long conversationId;
     Long senderId;
     Set<Long> recipientId;
+    
     String content;
-    String url;
+    String[] publicIds;
+    String[] urls;
+
     Boolean isRead;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;

@@ -1,6 +1,8 @@
 package ChitChat.chat_service.entity;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -70,6 +72,10 @@ public class Conversation {
     @JsonManagedReference(value = "conversation_messages")
     private Set<Message> messages;
 
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "conversation_medias")
+    private Set<Media> medias;
+
     private String lastMessage;
 
     private LocalDateTime lastMessageTime;
@@ -100,7 +106,7 @@ public class Conversation {
     
     @PrePersist
     public void handleBeforeCreate() {
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime();
     }
 
     @PreUpdate

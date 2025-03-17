@@ -1,5 +1,6 @@
 package ChitChat.chat_service.service;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.data.domain.Page;
@@ -12,11 +13,13 @@ import org.springframework.stereotype.Service;
 import ChitChat.chat_service.dto.request.ChatRequest;
 import ChitChat.chat_service.dto.response.UserResponse;
 import ChitChat.chat_service.entity.Conversation;
+import ChitChat.chat_service.entity.Media;
 import ChitChat.chat_service.entity.Message;
 import ChitChat.chat_service.exception.AppException;
 import ChitChat.chat_service.exception.ErrorCode;
 import ChitChat.chat_service.mapper.MessageMapper;
 import ChitChat.chat_service.repository.ConversationRepository;
+import ChitChat.chat_service.repository.MediaRepository;
 import ChitChat.chat_service.repository.MessageRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,7 @@ public class MessageService {
     MessageMapper messageMapper;
     ConversationRepository conversationRepository;
     UserServiceClient userServiceClient;
+    MediaRepository mediaRepository;
     SimpMessagingTemplate template;
 
     static int MESSAGES_PER_PAGE = 20;
@@ -72,14 +76,35 @@ public class MessageService {
         }
         Message message = messageMapper.toMessage(chatRequest);
         messageRepository.save(message);
+
+        if (chatRequest.getPublicIds() != null && chatRequest.getUrls() != null) {
+
+            if (chatRequest.getPublicIds().length != chatRequest.getUrls().length) {
+                throw new IllegalArgumentException("The size of publicIds and urls must be the same.");
+            }
+        
+            Set<Media> medias = new HashSet<>();
+        
+            for (int i = 0; i < chatRequest.getPublicIds().length; i++) {
+                Media media = new Media();
+                media.setPublicId(chatRequest.getPublicIds()[i]);
+                media.setUrl(chatRequest.getUrls()[i]);
+                media.setMessage(message);
+                media.setConversation(conversation);
+        
+                medias.add(mediaRepository.save(media));
+            }
+        
+            message.setMedias(medias);
+            conversation.setMedias(medias);
+            messageRepository.save(message);
+        }
+        
         conversation.setLastMessage(message.getContent());
         conversation.setLastMessageTime(message.getCreatedAt());
         conversationRepository.save(conversation);
-
-        Set<Long> receiverIds = chatRequest.getRecipientId();
-        for (Long receiverId : receiverIds) {
-            template.convertAndSend("/topic/" + receiverId, chatRequest);
-        }
+        
+        template.convertAndSend("/topic/conversation/" + chatRequest.getConversationId(), chatRequest);
     }
 
     // Delete Message

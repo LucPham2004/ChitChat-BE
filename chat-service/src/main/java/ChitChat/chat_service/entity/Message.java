@@ -1,6 +1,8 @@
 package ChitChat.chat_service.entity;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -81,7 +83,7 @@ public class Message {
     
     @PrePersist
     public void handleBeforeCreate() {
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Ho_Chi_Minh")).toLocalDateTime();
     }
 
     @PreUpdate

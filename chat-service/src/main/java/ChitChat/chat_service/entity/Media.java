@@ -41,6 +41,11 @@ public class Media {
     @JsonBackReference(value = "message_medias")
     private Message message;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "conversation_id")
+    @JsonBackReference(value = "conversation_medias")
+    private Conversation conversation;
+    
     @PrePersist
     public void handleBeforeCreate() {
         this.createdAt = LocalDateTime.now();

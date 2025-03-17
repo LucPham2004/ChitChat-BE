@@ -21,5 +21,7 @@ public class ChatRequest {
     Set<Long> recipientId;
     
     String content;
-    String url;
+
+    String[] publicIds;
+    String[] urls;
 }

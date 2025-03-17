@@ -20,6 +20,8 @@ public interface MediaRepository extends PagingAndSortingRepository<Media, Strin
     boolean existsById(String id);
 
     Page<Media> findByMessageId(Long messageId, Pageable pageable);
+    
+    Page<Media> findByConversationId(Long conversationId, Pageable pageable);
 
     int countByMessageId(Long id);
 }
