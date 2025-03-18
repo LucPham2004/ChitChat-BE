@@ -1,6 +1,5 @@
 package ChitChat.chat_service.dto.response;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -23,10 +22,10 @@ public class ConversationResponse {
     String description;
     String color;
     String emoji;
-    String lastMessage;
-    LocalDateTime lastMessageTime;
     List<String> avatarUrls;
     String avatarPublicId;
+
+    ChatResponse lastMessage;
 
     Long ownerId;
     Set<Long> participantIds;

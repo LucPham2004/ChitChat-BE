@@ -71,7 +71,7 @@ public class ConversationController {
             .build();
     }
 
-    @GetMapping("/get/{convId}")
+    @GetMapping("/get/participants/{convId}")
     public ApiResponse<List<ChatParticipants>> getParticipantsByConvId(@PathVariable Long convId) {
         List<ChatParticipants> participants = conversationService.getParticipantsByConvId(convId);
         return ApiResponse.<List<ChatParticipants>>builder()

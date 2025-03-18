@@ -2,7 +2,6 @@ package ChitChat.chat_service.mapper;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -15,7 +14,6 @@ import ChitChat.chat_service.dto.response.ConversationResponse;
 import ChitChat.chat_service.dto.response.ConversationShortResponse;
 import ChitChat.chat_service.dto.response.UserResponse;
 import ChitChat.chat_service.entity.Conversation;
-import ChitChat.chat_service.entity.Media;
 import ChitChat.chat_service.entity.Message;
 import ChitChat.chat_service.service.UserServiceClient;
 import lombok.AccessLevel;
@@ -28,6 +26,7 @@ import lombok.experimental.FieldDefaults;
 public class ConversationMapper {
 
     //MessageRepository messageRepository;
+    MessageMapper messageMapper;
     UserServiceClient userServiceClient;
     
     public Conversation toConversation(ConversationRequest conversationRequest) {
@@ -36,7 +35,7 @@ public class ConversationMapper {
                 conversationRequest.getName() : null)
             .description(conversationRequest.getDescription())
             .avatarUrl(conversationRequest.getAvatarUrl() != null && !conversationRequest.isGroup() ? 
-                conversationRequest.getAvatarUrl() : "/user_default.avif")
+                conversationRequest.getAvatarUrl() : null)
             .avatarPublicId(conversationRequest.getAvatarPublicId())
             .color(conversationRequest.getColor())
             .emoji(conversationRequest.getEmoji())
@@ -92,27 +91,6 @@ public class ConversationMapper {
                 .orElse(null);
         }
 
-        String lastMessageContent = lastMessage != null ? lastMessage.getContent() : null;
-        if (lastMessage != null && lastMessageContent == null) {
-            Media lastMessagMedia = lastMessage.getMedias().stream()
-                .max(Comparator.comparing(Media::getCreatedAt))
-                .orElse(null);
-
-            if (lastMessagMedia != null) {
-                String url = lastMessagMedia.getUrl();
-                boolean isVideo = Arrays.asList(".mp4", ".webm", ".mov", ".avi", ".mkv")
-                    .stream().anyMatch(url::contains);
-
-                if (lastMessage.getSenderId().equals(userId)) {
-                    lastMessageContent = isVideo ? "Bạn đã gửi một video" : "Bạn đã gửi một ảnh";
-                } else {
-                    lastMessageContent = isVideo
-                        ? conversationName + " đã gửi một video"
-                        : conversationName + " đã gửi một ảnh";
-                }
-            }
-        }
-
         // Lấy danh sách avatarUrls
         String defaultAvatar = "/user_default.avif";
         List<String> avatarUrls = new ArrayList<>();
@@ -141,9 +119,7 @@ public class ConversationMapper {
         return ConversationShortResponse.builder()
             .id(conversation.getId())
             .name(conversationName)
-            .lastMessage(lastMessageContent)
-            .isThisYourLastMessage(lastMessage != null && lastMessage.getSenderId().equals(userId))
-            .lastMessageTime(lastMessage != null ? lastMessage.getCreatedAt() : null)
+            .lastMessage(messageMapper.toResponse(lastMessage))
             .avatarUrls(avatarUrls)
             .avatarPublicId(conversation.getAvatarPublicId())
             .ownerId(conversation.getOwnerId())
@@ -185,27 +161,6 @@ public class ConversationMapper {
                 .orElse(null);
         }
 
-        String lastMessageContent = lastMessage != null ? lastMessage.getContent() : null;
-        if (lastMessage != null && lastMessageContent == null) {
-            Media lastMessagMedia = lastMessage.getMedias().stream()
-                .max(Comparator.comparing(Media::getCreatedAt))
-                .orElse(null);
-
-            if (lastMessagMedia != null) {
-                String url = lastMessagMedia.getUrl();
-                boolean isVideo = Arrays.asList(".mp4", ".webm", ".mov", ".avi", ".mkv")
-                    .stream().anyMatch(url::contains);
-
-                if (lastMessage.getSenderId().equals(userId)) {
-                    lastMessageContent = isVideo ? "Bạn đã gửi một video" : "Bạn đã gửi một ảnh";
-                } else {
-                    lastMessageContent = isVideo
-                        ? conversationName + " đã gửi một video"
-                        : conversationName + " đã gửi một ảnh";
-                }
-            }
-        }
-
         // Lấy danh sách avatarUrls
         String defaultAvatar = "/user_default.avif";
         List<String> avatarUrls = new ArrayList<>();
@@ -239,8 +194,7 @@ public class ConversationMapper {
             .avatarPublicId(conversation.getAvatarPublicId())
             .color(conversation.getColor())
             .emoji(conversation.getEmoji())
-            .lastMessage(lastMessage != null ? lastMessage.getContent() : null)
-            .lastMessageTime(lastMessage != null ? lastMessage.getCreatedAt() : null)
+            .lastMessage(messageMapper.toResponse(lastMessage))
             .ownerId(conversation.getOwnerId())
             .participantIds(conversation.getParticipantIds())
             .isGroup(conversation.isGroup())
