@@ -67,6 +67,12 @@ public class User {
 
     @Column(name = "avatar_url")
     private String avatarUrl;
+    
+    @Column(name = "over_photo_public_id")
+    private String coverPhotoPublicId;
+
+    @Column(name = "over_photo_url")
+    private String coverPhotoUrl;
 
     private String createdBy;
 

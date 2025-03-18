@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ChitChat.user_service.dto.request.UserCreationRequest;
+import ChitChat.user_service.dto.request.UserImageUpdateReq;
 import ChitChat.user_service.dto.request.UserUpdateOtpRequest;
 import ChitChat.user_service.dto.request.UserUpdateRequest;
 import ChitChat.user_service.dto.response.UserDTO;
@@ -163,10 +164,33 @@ public class UserService {
                 && !reqUser.getLocation().equals(dbUser.getLocation())) {
             dbUser.setLocation(reqUser.getLocation());
         }
+
+        return this.userRepository.save(dbUser);
+    }
+
+    // Update user avatar and cover photo
+    @Transactional
+    public User updateUserImages(UserImageUpdateReq reqUser) {
+        User dbUser = this.findById(reqUser.getId()).get();
         
+        if (reqUser.getAvatarPublicId() != null && !reqUser.getAvatarPublicId().isEmpty()
+                && !reqUser.getAvatarPublicId().equals(dbUser.getAvatarPublicId())) {
+            dbUser.setAvatarPublicId(reqUser.getAvatarPublicId());
+        }
+
         if (reqUser.getAvatarUrl() != null && !reqUser.getAvatarUrl().isEmpty()
                 && !reqUser.getAvatarUrl().equals(dbUser.getAvatarUrl())) {
-            dbUser.setLocation(reqUser.getAvatarUrl());
+            dbUser.setAvatarUrl(reqUser.getAvatarUrl());
+        }
+        
+        if (reqUser.getCoverPhotoPublicId() != null && !reqUser.getCoverPhotoPublicId().isEmpty()
+                && !reqUser.getCoverPhotoPublicId().equals(dbUser.getCoverPhotoPublicId())) {
+            dbUser.setCoverPhotoPublicId(reqUser.getCoverPhotoPublicId());
+        }
+
+        if (reqUser.getCoverPhotoUrl() != null && !reqUser.getCoverPhotoUrl().isEmpty()
+                && !reqUser.getCoverPhotoUrl().equals(dbUser.getCoverPhotoUrl())) {
+            dbUser.setCoverPhotoUrl(reqUser.getCoverPhotoUrl());
         }
 
         return this.userRepository.save(dbUser);

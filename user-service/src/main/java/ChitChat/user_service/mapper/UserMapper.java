@@ -50,6 +50,8 @@ public class UserMapper {
         userResponse.setPhone(user.getPhone());
         userResponse.setAvatarUrl(user.getAvatarUrl() != null ? user.getAvatarUrl() : "/user_default.avif");
         userResponse.setAvatarPublicId(user.getAvatarPublicId());
+        userResponse.setCoverPhotoUrl(user.getCoverPhotoUrl() != null ? user.getCoverPhotoUrl() : "https://images.unsplash.com/photo-1501594907352-04cda38ebc29");
+        userResponse.setCoverPhotoPublicId(user.getCoverPhotoPublicId());
         userResponse.setBio(user.getBio());
         userResponse.setLocation(user.getLocation());
         userResponse.setJob(user.getJob());

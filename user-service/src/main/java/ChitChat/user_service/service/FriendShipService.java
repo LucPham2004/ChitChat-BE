@@ -21,6 +21,7 @@ public class FriendshipService {
     FriendshipRepository friendShipRepository;
     UserService userService;
     UserRepository userRepository;
+    
     public Friendship getFriendStatus(Long requesterId, Long receiverId) {
         if (!userRepository.existsById(requesterId) || !userRepository.existsById(receiverId)) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);

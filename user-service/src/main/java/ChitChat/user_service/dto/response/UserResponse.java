@@ -21,8 +21,6 @@ public class UserResponse {
      Long id;
      String email;
      String username;
-     String avatarPublicId;
-     String avatarUrl;
      String firstName;
      String lastName;
      String location;
@@ -30,6 +28,11 @@ public class UserResponse {
      String job;
      Set<String> authorities;
      String phone;
+     
+     String avatarPublicId;
+     String avatarUrl;
+     String coverPhotoPublicId;
+     String coverPhotoUrl;
 
      LocalDate dob;
      Instant createdAt;
