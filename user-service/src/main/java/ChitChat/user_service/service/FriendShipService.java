@@ -47,17 +47,18 @@ public class FriendshipService {
         return friendShipRepository.save(friendship);
     }
 
-    public void deleteFriendShip(Long id) {
-        if (!friendShipRepository.existsById(id)) {
+    public void deleteFriendShip(Long iselfId, Long otherId) {
+        Friendship friendship = friendShipRepository.findBy2UserIds(iselfId, otherId);
+        if (friendship == null) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
 
-        friendShipRepository.delete(friendShipRepository.findById(id).get());
+        friendShipRepository.delete(friendship);
     }
 
     @Transactional
-    public Friendship editFriendShipStatus(Long id, FriendshipStatus status) {
-        Friendship friendship = friendShipRepository.findById(id).get();
+    public Friendship editFriendShipStatus(Long iselfId, Long otherId, FriendshipStatus status) {
+        Friendship friendship = friendShipRepository.findBy2UserIds(iselfId, otherId);
 
         friendship.setStatus(status);
         return friendShipRepository.save(friendship);

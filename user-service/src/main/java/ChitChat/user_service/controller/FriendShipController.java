@@ -2,7 +2,6 @@ package ChitChat.user_service.controller;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,20 +59,23 @@ public class FriendshipController {
                             .build();
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ApiResponse<Void> deleteFriendShip(@PathVariable Long id) { 
-            this.friendshipService.deleteFriendShip(id);
+    @DeleteMapping("/delete")
+    public ApiResponse<Void> deleteFriendShip(
+                    @RequestParam Long senderId, 
+                    @RequestParam Long recipientId) { 
+            this.friendshipService.deleteFriendShip(senderId, recipientId);
             return ApiResponse.<Void>builder()
                             .code(1000)
                             .message("Delete friendship successfully!")
                             .build();
     }
 
-    @PutMapping("/update/{id}/{status}")
+    @PutMapping("/update")
     public ApiResponse<FriendShipResponse> editFriendShipStatus(
-					@RequestParam Long id, 
+					@RequestParam Long senderId, 
+					@RequestParam Long recipientId, 
 					@RequestParam FriendshipStatus status) {
-        	var response = this.friendshipService.editFriendShipStatus(id, status);
+        	var response = this.friendshipService.editFriendShipStatus(senderId, recipientId, status);
             return ApiResponse.<FriendShipResponse>builder()
                             .code(1000)
                             .message("Edit friendship status successfully!")

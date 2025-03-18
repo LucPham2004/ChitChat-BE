@@ -21,6 +21,7 @@ public class UserDTO {
     String avatarPublicId;
     String avatarUrl;
     boolean isFriend;
+    boolean isFriendRequestSent;
     int friendNum;
     Long mutualFriendsNum;
 }

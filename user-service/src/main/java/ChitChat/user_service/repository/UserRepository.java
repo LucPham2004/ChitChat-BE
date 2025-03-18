@@ -1,7 +1,6 @@
 package ChitChat.user_service.repository;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -43,6 +42,7 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
                """)
      int countAll();
 
+
      // Find User's friends
      @Query("""
                SELECT u FROM User u
@@ -64,6 +64,50 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
                """)
      int countFriends(@Param("userId") Long userId);
 
+     // Find User's friend requests
+     @Query("""
+               SELECT u FROM User u
+               JOIN Friendship f
+               ON (f.sender = u OR f.recipient = u)
+               WHERE (f.sender.id = :userId OR f.recipient.id = :userId)
+               AND f.status = 'Pending'
+               AND u.id != :userId
+               """)
+     Page<User> findFriendRequests(@Param("userId") Long userId, Pageable pageable);
+     
+     @Query("""
+               SELECT COUNT(u) FROM User u
+               JOIN Friendship f
+               ON (f.sender = u OR f.recipient = u)
+               WHERE (f.sender.id = :userId OR f.recipient.id = :userId)
+               AND f.status = 'Pending'
+               AND u.id != :userId
+               """)
+     int countFriendRequests(@Param("userId") Long userId);
+
+     // Find random users: not friends, not those sent reuquest to current user
+     @Query("""
+               SELECT u FROM User u
+               WHERE u.id != :userId
+                    AND NOT EXISTS (
+                    SELECT f FROM Friendship f
+                    WHERE 
+                         (
+                              (f.sender.id = :userId AND f.recipient.id = u.id)
+                              OR (f.recipient.id = :userId AND f.sender.id = u.id)
+                         )
+                         AND f.status = 'Accepted'
+                    )
+                    AND NOT EXISTS (
+                    SELECT f FROM Friendship f
+                    WHERE 
+                         f.sender.id = u.id AND f.recipient.id = :userId
+                         AND f.status = 'Pending'
+                    )
+               ORDER BY FUNCTION('RAND')
+               """)
+     Page<User> findRandomUsers(@Param("userId") Long userId, Pageable pageable);
+     
 	// Friend suggestion by finding other users having most mutual friends
      @Query("""
 		SELECT u FROM User u
@@ -116,12 +160,19 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
      int countMutualFriends(@Param("userAId") Long userAId, @Param("userBId") Long userBId);
 
      @Query("""
-               SELECT u.id, COUNT(f) FROM Friendship f
-               JOIN User u ON (f.sender.id = :userId AND f.recipient.id IN :memberIds
-               OR f.recipient.id = :userId AND f.sender.id IN :memberIds)
-               GROUP BY u.id
+               SELECT CASE
+                         WHEN f.sender.id = :userId THEN f.recipient.id
+                         ELSE f.sender.id
+                         END, COUNT(f)
+               FROM Friendship f
+               WHERE (f.sender.id = :userId AND f.recipient.id IN :memberIds)
+                    OR (f.recipient.id = :userId AND f.sender.id IN :memberIds)
+               GROUP BY CASE
+                         WHEN f.sender.id = :userId THEN f.recipient.id
+                         ELSE f.sender.id
+                         END
                """)
-     Map<Long, Long> countMutualFriendsForUsers(@Param("userId") Long userId,
+     List<Object[]> countMutualFriendsForUsers(@Param("userId") Long userId,
                @Param("memberIds") List<Long> memberIds);
 
      @Query("SELECT u FROM User u WHERE u.username = :loginInput OR u.email = :loginInput OR u.phone = :loginInput")

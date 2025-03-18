@@ -22,10 +22,13 @@ import ChitChat.user_service.dto.request.UserImageUpdateReq;
 import ChitChat.user_service.dto.request.UserUpdateOtpRequest;
 import ChitChat.user_service.dto.request.UserUpdateRequest;
 import ChitChat.user_service.dto.response.UserDTO;
+import ChitChat.user_service.entity.Friendship;
 import ChitChat.user_service.entity.User;
+import ChitChat.user_service.enums.FriendshipStatus;
 import ChitChat.user_service.exception.AppException;
 import ChitChat.user_service.exception.ErrorCode;
 import ChitChat.user_service.mapper.UserMapper;
+import ChitChat.user_service.repository.FriendshipRepository;
 import ChitChat.user_service.repository.UserRepository;
 
 import lombok.AccessLevel;
@@ -40,6 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
+    FriendshipRepository friendshipRepository;
     PasswordEncoder passwordEncoder;
 
     static int USERS_PER_PAGE = 20;
@@ -57,6 +61,18 @@ public class UserService {
 
         return getUsersWithMutualFriendsCount(userId, friends);
     }
+    
+    // Get User's friend requests
+    public Page<UserDTO> getUserFriendRequests(Long userId, int pageNum) {
+        if (!userRepository.existsById(userId)) {
+            throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
+        }
+        Pageable pageable = PageRequest.of(pageNum, USERS_PER_PAGE);
+
+        Page<User> friends = userRepository.findFriendRequests(userId, pageable);
+
+        return getUsersWithMutualFriendsCount(userId, friends);
+    }
 
     // Get User friends
     public Page<UserDTO> getSuggestedFriends(Long userId, int pageNum) {
@@ -66,6 +82,10 @@ public class UserService {
         Pageable pageable = PageRequest.of(pageNum, USERS_PER_PAGE);
 
         Page<User> friends = userRepository.findSuggestedFriends(userId, pageable);
+
+        if(friends.getNumber() < 1) {
+            friends = userRepository.findRandomUsers(userId, pageable);
+        }
 
         return getUsersWithMutualFriendsCount(userId, friends);
     }
@@ -229,11 +249,28 @@ public class UserService {
     // Map to DTO with mutual friends count for many users
     private Page<UserDTO> getUsersWithMutualFriendsCount(Long userId, Page<User> users) {
         List<Long> userIds = users.getContent().stream().map(User::getId).collect(Collectors.toList());
-        Map<Long, Long> mutualFriendsCount = userRepository.countMutualFriendsForUsers(userId, userIds);
+        List<Object[]> results = userRepository.countMutualFriendsForUsers(userId, userIds);
+
+        Map<Long, Long> mutualFriendsCount = results.stream()
+            .collect(Collectors.toMap(
+                row -> (Long) row[0],
+                row -> (Long) row[1]
+            ));
 
         return users.map(user -> {
             UserDTO dto = userMapper.toUserDTO(user);
             dto.setMutualFriendsNum(mutualFriendsCount.getOrDefault(user.getId(), 0L));
+
+            Friendship friend = friendshipRepository.findBy2UserIds(userId, user.getId());
+
+            if(friend == null) {
+                dto.setFriend(false);
+                dto.setFriendRequestSent(false);
+            } else if(friend.getStatus() == FriendshipStatus.Pending && friend.getSender().getId() == user.getId()) {
+                dto.setFriend(false);
+                dto.setFriendRequestSent(true);
+            }
+
             return dto;
         });
     }
