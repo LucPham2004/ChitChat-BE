@@ -27,9 +27,6 @@ public class ConversationRequest {
     Set<Long> participantIds;
     Long ownerId;
 
-    String lastMessage;
-    String lastMessageTime;
-
     boolean isGroup;
     boolean isRead;
     boolean isMuted;

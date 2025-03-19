@@ -1,10 +1,12 @@
 package ChitChat.chat_service.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -109,13 +111,28 @@ public class ConversationController {
     
     // PUT METHODS
 
-    @PutMapping("/update")
-    public ApiResponse<ConversationResponse> updateConversation(@RequestBody ConversationRequest conversationRequest) {
+    @PutMapping("/update/{userId}")
+    public ApiResponse<ConversationResponse> updateConversation(
+                @RequestBody ConversationRequest conversationRequest,
+                @PathVariable Long userId) {
         Conversation updatedConversation = conversationService.updateConversation(conversationRequest);
         return ApiResponse.<ConversationResponse>builder()
             .code(1000)
             .message("Update conversation successfully")
-            .result(conversationMapper.toConversationResponse(updatedConversation, conversationRequest.getOwnerId()))
+            .result(conversationMapper.toConversationResponse(updatedConversation, userId))
+            .build();
+    }
+
+    @PatchMapping("/update/partially/{id}/{userId}")
+    public ApiResponse<ConversationResponse> updateConversationPartially(
+                @PathVariable Long id, 
+                @PathVariable Long userId,
+                @RequestBody Map<String, Object> updates) {
+        Conversation updatedConversation = conversationService.updateConversationPartially(id, updates);
+        return ApiResponse.<ConversationResponse>builder()
+            .code(1000)
+            .message("Update conversation successfully")
+            .result(conversationMapper.toConversationResponse(updatedConversation, userId))
             .build();
     }
 

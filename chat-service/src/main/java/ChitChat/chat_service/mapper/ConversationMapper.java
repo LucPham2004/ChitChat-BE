@@ -1,6 +1,5 @@
 package ChitChat.chat_service.mapper;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -41,10 +40,6 @@ public class ConversationMapper {
             .emoji(conversationRequest.getEmoji())
             .participantIds(conversationRequest.getParticipantIds())
             .ownerId(conversationRequest.getOwnerId())
-            .lastMessage(conversationRequest.getLastMessage())
-            .lastMessageTime(conversationRequest.getLastMessageTime() != null ?
-                LocalDateTime.parse(conversationRequest.getLastMessageTime()) : null
-                )
             .isGroup(conversationRequest.isGroup())
             .isRead(conversationRequest.isRead())
             .isMuted(conversationRequest.isMuted())

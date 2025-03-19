@@ -2,12 +2,14 @@ package ChitChat.chat_service.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import ChitChat.chat_service.dto.request.ConversationRequest;
 import ChitChat.chat_service.dto.response.ChatParticipants;
 import ChitChat.chat_service.dto.response.UserResponse;
@@ -131,11 +133,6 @@ public class ConversationService {
             conversation.setOwnerId(conversationRequest.getOwnerId());
         }
 
-        if(conversationRequest.getLastMessage() != null && !conversationRequest.getLastMessage().isEmpty()
-            && !conversationRequest.getLastMessage().equals(conversation.getLastMessage())) {
-            conversation.setLastMessage(conversationRequest.getLastMessage());
-        }
-
         if(conversationRequest.isGroup() != conversation.isGroup()) {
             conversation.setGroup(conversationRequest.isGroup());
         }
@@ -182,6 +179,158 @@ public class ConversationService {
 
         return conversationRepository.save(conversation);
     }
+
+    // Update conversation partially
+    @Transactional
+    public Conversation updateConversationPartially(Long id, Map<String, Object> updates) {
+        Conversation conversation = conversationRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.ENTITY_NOT_EXISTED));
+
+        updates.forEach((key, value) -> {
+            switch (key) {
+                case "name":
+                    String name = (String) value;
+                    if (name != null && !name.isEmpty() && !name.equals(conversation.getName())) {
+                        conversation.setName(name);
+                    }
+                    break;
+
+                case "description":
+                    String description = (String) value;
+                    if (description != null && !description.isEmpty() && !description.equals(conversation.getDescription())) {
+                        conversation.setDescription(description);
+                    }
+                    break;
+
+                case "color":
+                    String color = (String) value;
+                    if (color != null && !color.isEmpty() && !color.equals(conversation.getColor())) {
+                        conversation.setColor(color);
+                    }
+                    break;
+
+                case "emoji":
+                    String emoji = (String) value;
+                    if (emoji != null && !emoji.isEmpty() && !emoji.equals(conversation.getEmoji())) {
+                        conversation.setEmoji(emoji);
+                    }
+                    break;
+
+                case "avatarPublicId":
+                    String publicId = (String) value;
+                    if (publicId != null && !publicId.isEmpty() && !publicId.equals(conversation.getAvatarPublicId())) {
+                        conversation.setAvatarPublicId(publicId);
+                    }
+                    break;
+
+                case "avatarUrl":
+                    String avatarUrl = (String) value;
+                    if (avatarUrl != null && !avatarUrl.isEmpty() && !avatarUrl.equals(conversation.getAvatarUrl())) {
+                        conversation.setAvatarUrl(avatarUrl);
+                    }
+                    break;
+
+                case "participantIds":
+                    @SuppressWarnings("unchecked")
+                    List<Integer> participantList = (List<Integer>) value; // Jackson chuyển Set<Long> thành List<Integer>
+                    Set<Long> participantIds = participantList.stream()
+                            .map(Long::valueOf)
+                            .collect(Collectors.toSet());
+                    conversation.setParticipantIds(participantIds);
+                    break;
+
+                case "ownerId":
+                    Long ownerId = ((Number) value).longValue();
+                    if (!ownerId.equals(conversation.getOwnerId())) {
+                        conversation.setOwnerId(ownerId);
+                    }
+                    break;
+
+                case "isGroup":
+                    boolean isGroup = (Boolean) value;
+                    if (isGroup != conversation.isGroup()) {
+                        conversation.setGroup(isGroup);
+                    }
+                    break;
+
+                case "isRead":
+                    boolean isRead = (Boolean) value;
+                    if (isRead != conversation.isRead()) {
+                        conversation.setRead(isRead);
+                    }
+                    break;
+
+                case "isMuted":
+                    boolean isMuted = (Boolean) value;
+                    if (isMuted != conversation.isMuted()) {
+                        conversation.setMuted(isMuted);
+                    }
+                    break;
+
+                case "isPinned":
+                    boolean isPinned = (Boolean) value;
+                    if (isPinned != conversation.isPinned()) {
+                        conversation.setPinned(isPinned);
+                    }
+                    break;
+
+                case "isArchived":
+                    boolean isArchived = (Boolean) value;
+                    if (isArchived != conversation.isArchived()) {
+                        conversation.setArchived(isArchived);
+                    }
+                    break;
+
+                case "isDeleted":
+                    boolean isDeleted = (Boolean) value;
+                    if (isDeleted != conversation.isDeleted()) {
+                        conversation.setDeleted(isDeleted);
+                    }
+                    break;
+
+                case "isBlocked":
+                    boolean isBlocked = (Boolean) value;
+                    if (isBlocked != conversation.isBlocked()) {
+                        conversation.setBlocked(isBlocked);
+                    }
+                    break;
+
+                case "isReported":
+                    boolean isReported = (Boolean) value;
+                    if (isReported != conversation.isReported()) {
+                        conversation.setReported(isReported);
+                    }
+                    break;
+
+                case "isSpam":
+                    boolean isSpam = (Boolean) value;
+                    if (isSpam != conversation.isSpam()) {
+                        conversation.setSpam(isSpam);
+                    }
+                    break;
+
+                case "isMarkedAsUnread":
+                    boolean isMarkedAsUnread = (Boolean) value;
+                    if (isMarkedAsUnread != conversation.isMarkedAsUnread()) {
+                        conversation.setMarkedAsUnread(isMarkedAsUnread);
+                    }
+                    break;
+
+                case "isMarkedAsRead":
+                    boolean isMarkedAsRead = (Boolean) value;
+                    if (isMarkedAsRead != conversation.isMarkedAsRead()) {
+                        conversation.setMarkedAsRead(isMarkedAsRead);
+                    }
+                    break;
+
+                default:
+                    System.out.println("Trường không hợp lệ: " + key);
+            }
+        });
+
+        return conversationRepository.save(conversation);
+    }
+
 
     // DELETE METHODS
 

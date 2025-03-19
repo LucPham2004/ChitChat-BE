@@ -17,7 +17,7 @@ public class MediaResponse {
     String publicId;
     String url;
     Long messageId;
-    Long ConversationId;
+    Long conversationId;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 }
