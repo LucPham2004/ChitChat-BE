@@ -16,6 +16,10 @@ import lombok.experimental.FieldDefaults;
 public class MediaResponse {
     String publicId;
     String url;
+    Long height;
+    Long width;
+    String resourceType;
+
     Long messageId;
     Long conversationId;
     LocalDateTime createdAt;

@@ -24,6 +24,9 @@ public class ChatResponse {
     String content;
     String[] publicIds;
     String[] urls;
+    Long[] heights;
+    Long[] widths;
+    String[] resourceTypes;
 
     Boolean isRead;
     LocalDateTime createdAt;

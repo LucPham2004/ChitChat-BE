@@ -74,8 +74,23 @@ public class MessageMapper {
                 .map(Media::getUrl)
                 .toArray(String[]::new);
 
+            Long[] heights = medias.stream()
+                .map(Media::getHeight)
+                .toArray(Long[]::new);
+            
+            Long[] widths = medias.stream()
+                .map(Media::getWidth)
+                .toArray(Long[]::new);
+            
+            String[] resourceTypes = medias.stream()
+                .map(Media::getResourceType)
+                .toArray(String[]::new);
+
             response.setPublicIds(publicIds);
             response.setUrls(urls);
+            response.setHeights(heights);
+            response.setWidths(widths);
+            response.setResourceTypes(resourceTypes);
         }
 
         return response;

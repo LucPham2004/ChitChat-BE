@@ -29,6 +29,13 @@ public class Media {
     private String publicId;
     
     private String url;
+
+    private Long height;
+
+    private Long width;
+
+    @Column(name = "resource_type")
+    private String resourceType;
     
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

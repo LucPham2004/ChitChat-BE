@@ -19,6 +19,9 @@ public class MediaMapper {
 
         response.setPublicId(media.getPublicId());
         response.setUrl(media.getUrl());
+        response.setHeight(media.getHeight());
+        response.setWidth(media.getWidth());
+        response.setResourceType(media.getResourceType());
         response.setConversationId(media.getConversation().getId());
         response.setMessageId(media.getMessage().getId());
         response.setCreatedAt(media.getCreatedAt());

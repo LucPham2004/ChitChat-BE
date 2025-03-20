@@ -77,10 +77,15 @@ public class MessageService {
         Message message = messageMapper.toMessage(chatRequest);
         messageRepository.save(message);
 
-        if (chatRequest.getPublicIds() != null && chatRequest.getUrls() != null) {
+        if (chatRequest.getPublicIds() != null && chatRequest.getUrls() != null &&
+            chatRequest.getHeights() != null && chatRequest.getWidths() != null &&
+            chatRequest.getResourceTypes() != null) {
 
-            if (chatRequest.getPublicIds().length != chatRequest.getUrls().length) {
-                throw new IllegalArgumentException("The size of publicIds and urls must be the same.");
+            if (chatRequest.getPublicIds().length != chatRequest.getUrls().length
+                || chatRequest.getPublicIds().length != chatRequest.getHeights().length
+                || chatRequest.getPublicIds().length != chatRequest.getWidths().length
+                || chatRequest.getPublicIds().length != chatRequest.getResourceTypes().length) {
+                throw new IllegalArgumentException("The size of publicIds and urls/heights/widths/types must be the same.");
             }
         
             Set<Media> medias = new HashSet<>();
@@ -89,6 +94,10 @@ public class MessageService {
                 Media media = new Media();
                 media.setPublicId(chatRequest.getPublicIds()[i]);
                 media.setUrl(chatRequest.getUrls()[i]);
+                media.setHeight(chatRequest.getHeights()[i]);
+                media.setWidth(chatRequest.getWidths()[i]);
+                media.setResourceType(chatRequest.getResourceTypes()[i]);
+                
                 media.setMessage(message);
                 media.setConversation(conversation);
         

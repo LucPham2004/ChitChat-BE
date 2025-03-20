@@ -69,7 +69,7 @@ public class Message {
     @JsonBackReference(value = "conversation_messages")
     private Conversation conversation;
 
-    @OneToMany(mappedBy = "message", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "message", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "message_medias")
     private Set<Media> medias;
 

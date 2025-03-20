@@ -24,4 +24,7 @@ public class ChatRequest {
 
     String[] publicIds;
     String[] urls;
+    Long[] heights;
+    Long[] widths;
+    String[] resourceTypes;
 }

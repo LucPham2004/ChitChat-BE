@@ -72,7 +72,7 @@ public class Conversation {
     @JsonManagedReference(value = "conversation_messages")
     private Set<Message> messages;
 
-    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "conversation_medias")
     private Set<Media> medias;
 
