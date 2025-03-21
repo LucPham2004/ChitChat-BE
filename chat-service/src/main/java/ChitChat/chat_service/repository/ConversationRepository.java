@@ -24,6 +24,22 @@ public interface ConversationRepository extends PagingAndSortingRepository<Conve
 
     boolean existsById(Long id);
 
+    @Query("""
+            SELECT c FROM Conversation c 
+            WHERE :userAId MEMBER OF c.participantIds 
+            AND :userBId MEMBER OF c.participantIds 
+            AND c.isGroup = false
+            """)
+    Optional<Conversation> findDirectMessage(@Param("userAId") Long userAId, @Param("userBId") Long userBId);
+    
+    @Query("""
+            SELECT c.id FROM Conversation c 
+            WHERE :userAId MEMBER OF c.participantIds 
+            AND :userBId MEMBER OF c.participantIds 
+            AND c.isGroup = false
+            """)
+    Long findDirectMessageId(@Param("userAId") Long userAId, @Param("userBId") Long userBId);
+
     @Query("SELECT c FROM Conversation c WHERE :userId MEMBER OF c.participantIds")
     Page<Conversation> findByParticipantIdsContaining(@Param("userId") Long userId, Pageable pageable);
     

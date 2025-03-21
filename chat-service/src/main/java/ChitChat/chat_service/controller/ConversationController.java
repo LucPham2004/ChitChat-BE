@@ -62,6 +62,16 @@ public class ConversationController {
             .result(conversations.map(conv -> conversationMapper.toConversationShortResponse(conv, userId)))
             .build();
     }
+    
+    @GetMapping("/get/{selfId}/{otherId}")
+    public ApiResponse<ConversationResponse> getDirectMessage(@PathVariable Long selfId, @PathVariable Long otherId) {
+        Conversation conversation = conversationService.getDirectMessage(selfId, otherId);
+        return ApiResponse.<ConversationResponse>builder()
+            .code(1000)
+            .message("Get conversation successfully")
+            .result(conversationMapper.toConversationResponse(conversation, selfId))
+            .build();
+    }
 
     @GetMapping("/get/{convId}/{userId}")
     public ApiResponse<ConversationResponse> getConversationById(@PathVariable Long convId, @PathVariable Long userId) {
@@ -145,6 +155,15 @@ public class ConversationController {
         return ApiResponse.<Void>builder()
             .code(1000)
             .message("Delete conversation with ID " + id + " successfully!")
+            .build();
+    }
+
+    @GetMapping("/get/id")
+    public ApiResponse<Long> getDirectMessageId(@RequestParam Long selfId, @RequestParam Long otherId) {
+        return ApiResponse.<Long>builder()
+            .code(1000)
+            .message("Get conversation successfully")
+            .result(conversationService.getDirectMessageId(selfId, otherId))
             .build();
     }
 

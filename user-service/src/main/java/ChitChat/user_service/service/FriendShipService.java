@@ -18,6 +18,7 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class FriendshipService {
+
     FriendshipRepository friendShipRepository;
     UserService userService;
     UserRepository userRepository;
@@ -57,10 +58,11 @@ public class FriendshipService {
     }
 
     @Transactional
-    public Friendship editFriendShipStatus(Long iselfId, Long otherId, FriendshipStatus status) {
-        Friendship friendship = friendShipRepository.findBy2UserIds(iselfId, otherId);
+    public Friendship editFriendShipStatus(Long selfId, Long otherId, FriendshipStatus status) {
+        Friendship friendship = friendShipRepository.findBy2UserIds(selfId, otherId);
 
         friendship.setStatus(status);
+
         return friendShipRepository.save(friendship);
     }
 }

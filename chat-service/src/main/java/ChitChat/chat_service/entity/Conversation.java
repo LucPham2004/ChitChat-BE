@@ -76,10 +76,6 @@ public class Conversation {
     @JsonManagedReference(value = "conversation_medias")
     private Set<Media> medias;
 
-    private String lastMessage;
-
-    private LocalDateTime lastMessageTime;
-
     // Flags
 
     private boolean isGroup;

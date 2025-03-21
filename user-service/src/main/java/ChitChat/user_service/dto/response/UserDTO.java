@@ -24,4 +24,6 @@ public class UserDTO {
     boolean isFriendRequestSent;
     int friendNum;
     Long mutualFriendsNum;
+
+    Long conversationId;
 }

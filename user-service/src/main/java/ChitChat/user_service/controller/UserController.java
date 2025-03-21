@@ -20,6 +20,7 @@ import ChitChat.user_service.dto.response.UserAuthResponse;
 import ChitChat.user_service.dto.response.UserDTO;
 import ChitChat.user_service.dto.response.UserResponse;
 import ChitChat.user_service.mapper.UserMapper;
+import ChitChat.user_service.service.ConversationServiceClient;
 import ChitChat.user_service.service.UserService;
 
 import jakarta.validation.Valid;
@@ -31,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
         private final UserService userService;
         private final UserMapper userMapper;
+        private final ConversationServiceClient conversationServiceClient;
 
         // POST
         @PostMapping("/create")
@@ -62,6 +64,20 @@ public class UserController {
                                 .code(1000)
                                 .message("Get user with ID " + id + " successfully!")
                                 .result(userMapper.toUserResponse(dbUser))
+                                .build();
+        }
+
+        @GetMapping("/get")
+        public ApiResponse<UserResponse> getUserById(
+                        @RequestParam Long selfId, 
+                        @RequestParam Long otherId) {
+                var dbUser = this.userService.getUser(otherId);
+                UserResponse userResponse = userMapper.toUserResponse(dbUser);
+                userResponse.setConversationId(conversationServiceClient.getDirectMessageId(selfId, otherId).getResult());
+                return ApiResponse.<UserResponse>builder()
+                                .code(1000)
+                                .message("Get user with ID " + otherId + " successfully!")
+                                .result(userResponse)
                                 .build();
         }
 

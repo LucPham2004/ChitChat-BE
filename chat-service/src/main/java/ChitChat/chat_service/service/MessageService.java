@@ -109,8 +109,6 @@ public class MessageService {
             messageRepository.save(message);
         }
         
-        conversation.setLastMessage(message.getContent());
-        conversation.setLastMessageTime(message.getCreatedAt());
         conversationRepository.save(conversation);
         
         template.convertAndSend("/topic/conversation/" + chatRequest.getConversationId(), chatRequest);

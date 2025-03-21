@@ -1,6 +1,7 @@
 package ChitChat.chat_service.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,6 +40,27 @@ public class ConversationService {
 
     public Conversation getById(Long id) {
         return conversationRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ENTITY_NOT_EXISTED));
+    }
+    
+    // Get direct message conversation between two users, if not exists, create new one
+    public Conversation getDirectMessage(Long selfId, Long otherId) {
+        Conversation conversation = conversationRepository.findDirectMessage(selfId, otherId).orElse(null);
+        
+        if(conversation == null) {
+            ConversationRequest conversationRequest = new ConversationRequest();
+
+            Set<Long> participantIds = new HashSet<>();
+            participantIds.add(selfId);
+            participantIds.add(otherId);
+            conversationRequest.setParticipantIds(participantIds);
+            conversationRequest.setOwnerId(selfId);
+            conversationRequest.setEmoji("👍");
+            conversationRequest.setGroup(false);
+
+            conversation = createConversation(conversationRequest);
+        }
+
+        return conversation;
     }
 
     public Page<Conversation> getByParticipantId(Long userId, int pageNum) {
@@ -81,6 +103,26 @@ public class ConversationService {
         }
         
         return list;
+    }
+
+    public Long getDirectMessageId(Long selfId, Long otherId) {
+        Long conversationId = conversationRepository.findDirectMessageId(selfId, otherId);
+        
+        if(conversationId == null) {
+            ConversationRequest conversationRequest = new ConversationRequest();
+
+            Set<Long> participantIds = new HashSet<>();
+            participantIds.add(selfId);
+            participantIds.add(otherId);
+            conversationRequest.setParticipantIds(participantIds);
+            conversationRequest.setOwnerId(selfId);
+            conversationRequest.setEmoji("👍");
+            conversationRequest.setGroup(false);
+
+            conversationId = createConversation(conversationRequest).getId();
+        }
+
+        return conversationId;
     }
 
     // POST METHODS

@@ -34,6 +34,8 @@ public class UserResponse {
      String coverPhotoPublicId;
      String coverPhotoUrl;
 
+     Long conversationId;
+
      LocalDate dob;
      Instant createdAt;
      Instant updatedAt;

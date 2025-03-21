@@ -68,10 +68,10 @@ public class User {
     @Column(name = "avatar_url")
     private String avatarUrl;
     
-    @Column(name = "over_photo_public_id")
+    @Column(name = "cover_photo_public_id")
     private String coverPhotoPublicId;
 
-    @Column(name = "over_photo_url")
+    @Column(name = "cover_photo_url")
     private String coverPhotoUrl;
 
     private String createdBy;
@@ -104,18 +104,6 @@ public class User {
 
     @OneToMany(mappedBy = "recipient", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Friendship> receivedFriendRequests;
-
-    // Conversations Many-to-Many
-    private Set<Long> conversationIds;
-
-    // Message One-to-Many
-    private Set<Long> messageIds;
-
-    // Message-Reaction One-to-Many
-    private Set<Long> messageReactionIds;
-
-    // Notification One-to-Many
-    private Set<Long> notificationIds;
 
     @PrePersist
     public void handleBeforeCreate() {

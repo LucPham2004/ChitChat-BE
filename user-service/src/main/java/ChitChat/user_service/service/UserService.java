@@ -44,6 +44,7 @@ public class UserService {
     UserRepository userRepository;
     UserMapper userMapper;
     FriendshipRepository friendshipRepository;
+    ConversationServiceClient conversationServiceClient;
     PasswordEncoder passwordEncoder;
 
     static int USERS_PER_PAGE = 20;
@@ -269,6 +270,12 @@ public class UserService {
             } else if(friend.getStatus() == FriendshipStatus.Pending && friend.getSender().getId() == user.getId()) {
                 dto.setFriend(false);
                 dto.setFriendRequestSent(true);
+            } else if(friend.getStatus() == FriendshipStatus.Accepted) {
+                dto.setFriend(true);
+                dto.setFriendRequestSent(false);
+                
+                Long conversationId = conversationServiceClient.getDirectMessageId(userId, user.getId()).getResult();
+                dto.setConversationId(conversationId);
             }
 
             return dto;
