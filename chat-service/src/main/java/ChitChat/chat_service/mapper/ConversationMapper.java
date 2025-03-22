@@ -40,7 +40,7 @@ public class ConversationMapper {
             .emoji(conversationRequest.getEmoji())
             .participantIds(conversationRequest.getParticipantIds())
             .ownerId(conversationRequest.getOwnerId())
-            .isGroup(conversationRequest.isGroup())
+            .isGroup(conversationRequest.getParticipantIds().size() > 2)
             .isRead(conversationRequest.isRead())
             .isMuted(conversationRequest.isMuted())
             .isPinned(conversationRequest.isPinned())
@@ -63,10 +63,21 @@ public class ConversationMapper {
         .collect(Collectors.toList());
 
         String conversationName;
-        if (conversation.isGroup()) {
+        if(conversation.getName() != null) {
+            conversationName = conversation.getName();
+        } else if (conversation.isGroup()) {
             // Nếu là group chat -> lấy tên tất cả participants khác userId
             List<String> participantNames = otherParticipants.stream().limit(3)
-                .map(id -> userServiceClient.getUserById(id).getResult().getFirstName())
+                .map(id -> { 
+                    UserResponse user = userServiceClient.getUserById(id).getResult();
+                    String name;
+                    if(user.getLastName() == null) {
+                        name = user.getFirstName();
+                    } else {
+                        name = user.getFirstName() + " " + user.getLastName();
+                    }
+                    return name;
+                })
                 .collect(Collectors.toList());
             conversationName = String.join(", ", participantNames);
         } else {
@@ -88,13 +99,14 @@ public class ConversationMapper {
 
         // Lấy danh sách avatarUrls
         String defaultAvatar = "/user_default.avif";
+        Set<Long> participants = conversation.getParticipantIds();
         List<String> avatarUrls = new ArrayList<>();
 
         if (conversation.getAvatarUrl() != null) {
             avatarUrls.add(conversation.getAvatarUrl());
         } else {
             if (conversation.isGroup()) {
-                avatarUrls = otherParticipants.stream()
+                avatarUrls = participants.stream()
                     .limit(4)
                     .map(id -> {
                         UserResponse user = userServiceClient.getUserById(id).getResult();
@@ -133,10 +145,21 @@ public class ConversationMapper {
             .collect(Collectors.toList());
 
         String conversationName;
-        if (conversation.isGroup()) {
+        if(conversation.getName() != null) {
+            conversationName = conversation.getName();
+        } else if (conversation.isGroup()) {
             // Nếu là group chat -> lấy tên tất cả participants khác userId
             List<String> participantNames = otherParticipants.stream().limit(3)
-                .map(id -> userServiceClient.getUserById(id).getResult().getFirstName())
+                .map(id -> { 
+                    UserResponse user = userServiceClient.getUserById(id).getResult();
+                    String name;
+                    if(user.getLastName() == null) {
+                        name = user.getFirstName();
+                    } else {
+                        name = user.getFirstName() + " " + user.getLastName();
+                    }
+                    return name;
+                })
                 .collect(Collectors.toList());
             conversationName = String.join(", ", participantNames);
         } else {
@@ -158,13 +181,14 @@ public class ConversationMapper {
 
         // Lấy danh sách avatarUrls
         String defaultAvatar = "/user_default.avif";
+        Set<Long> participants = conversation.getParticipantIds();
         List<String> avatarUrls = new ArrayList<>();
 
         if (conversation.getAvatarUrl() != null) {
             avatarUrls.add(conversation.getAvatarUrl());
         } else {
             if (conversation.isGroup()) {
-                avatarUrls = otherParticipants.stream()
+                avatarUrls = participants.stream()
                     .limit(4)
                     .map(id -> {
                         UserResponse user = userServiceClient.getUserById(id).getResult();

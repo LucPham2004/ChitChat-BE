@@ -63,7 +63,7 @@ public class ConversationController {
             .build();
     }
     
-    @GetMapping("/get/{selfId}/{otherId}")
+    @GetMapping("/get/direct-message/{selfId}/{otherId}")
     public ApiResponse<ConversationResponse> getDirectMessage(@PathVariable Long selfId, @PathVariable Long otherId) {
         Conversation conversation = conversationService.getDirectMessage(selfId, otherId);
         return ApiResponse.<ConversationResponse>builder()
@@ -163,7 +163,7 @@ public class ConversationController {
         return ApiResponse.<Long>builder()
             .code(1000)
             .message("Get conversation successfully")
-            .result(conversationService.getDirectMessageId(selfId, otherId))
+            .result(selfId != otherId ? conversationService.getDirectMessageId(selfId, otherId) : null)
             .build();
     }
 

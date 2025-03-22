@@ -106,6 +106,10 @@ public class ConversationService {
     }
 
     public Long getDirectMessageId(Long selfId, Long otherId) {
+        if(selfId.equals(otherId)) {
+            return null;
+        }
+        
         Long conversationId = conversationRepository.findDirectMessageId(selfId, otherId);
         
         if(conversationId == null) {
