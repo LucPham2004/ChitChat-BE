@@ -25,6 +25,7 @@ import ChitChat.user_service.dto.response.UserDTO;
 import ChitChat.user_service.entity.Friendship;
 import ChitChat.user_service.entity.User;
 import ChitChat.user_service.enums.FriendshipStatus;
+import ChitChat.user_service.enums.Gender;
 import ChitChat.user_service.exception.AppException;
 import ChitChat.user_service.exception.ErrorCode;
 import ChitChat.user_service.mapper.UserMapper;
@@ -163,8 +164,10 @@ public class UserService {
             dbUser.setLastName(reqUser.getLastName());
         }
 
-        if (reqUser.getGender() != null && !reqUser.getGender().equals(dbUser.getGender())) {
-            dbUser.setGender(reqUser.getGender());
+        if (reqUser.getGender() != null && !reqUser.getGender().equals(dbUser.getGender().toString())) {
+            dbUser.setGender(reqUser.getGender() == "Male" ? Gender.Male 
+                : reqUser.getGender() == "Female" ? Gender.Female 
+                : Gender.Other);
         }
 
         if (reqUser.getBio() != null && !reqUser.getBio().isEmpty()
@@ -174,7 +177,7 @@ public class UserService {
         
         if (reqUser.getJob() != null && !reqUser.getJob().isEmpty()
                 && !reqUser.getJob().equals(dbUser.getJob())) {
-            dbUser.setBio(reqUser.getJob());
+            dbUser.setJob(reqUser.getJob());
         }
 
         if (reqUser.getDob() != null && !LocalDate.parse(reqUser.getDob()).equals(dbUser.getDob())) {

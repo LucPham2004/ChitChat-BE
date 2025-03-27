@@ -1,6 +1,5 @@
 package ChitChat.user_service.dto.request;
 
-import ChitChat.user_service.enums.Gender;
 import lombok.Data;
 
 @Data
@@ -15,7 +14,7 @@ public class UserUpdateRequest {
 
     private String dob; // date of birth
 
-    private Gender gender;
+    private String gender;
 
     private String bio;
 
