@@ -30,8 +30,7 @@ public class MessageReaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private String emoji;
 
     // ManyToOne with User
     private Long userId;
@@ -40,6 +39,9 @@ public class MessageReaction {
     @JoinColumn(name = "message_id")
     @JsonBackReference(value = "message_reactions")
     private Message message;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
     
     @PrePersist
     public void handleBeforeCreate() {

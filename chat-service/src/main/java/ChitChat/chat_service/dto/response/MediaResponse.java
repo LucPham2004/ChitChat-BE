@@ -16,6 +16,7 @@ import lombok.experimental.FieldDefaults;
 public class MediaResponse {
     String publicId;
     String url;
+    String fileName;
     Long height;
     Long width;
     String resourceType;

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ChitChat.chat_service.dto.response.ApiResponse;
@@ -21,7 +22,7 @@ import lombok.experimental.FieldDefaults;
 public class MessageReactionController {
     MessageReactionService messageReactionService;
 
-    // Create messageReaction
+    // Get messageReaction
     @GetMapping("/get/count/message/{messageId}")
     public ApiResponse<Integer> getMessageReactionCount(@PathVariable Long messageId) {
         int messageReactionCount = messageReactionService.getMessageReactionCount(messageId);
@@ -33,9 +34,12 @@ public class MessageReactionController {
     }
     
     // Create messageReaction
-    @PostMapping("/create/user/{userId}/message/{messageId}")
-    public ApiResponse<MessageReaction> createMessageReaction(@PathVariable Long userId, @PathVariable Long messageId) {
-        MessageReaction messageReaction = messageReactionService.createMessageReaction(userId, messageId);
+    @PostMapping
+    public ApiResponse<MessageReaction> createMessageReaction(
+            @RequestParam Long userId, 
+            @RequestParam Long messageId,
+            @RequestParam String emoji) {
+        MessageReaction messageReaction = messageReactionService.createMessageReaction(userId, messageId, emoji);
         return ApiResponse.<MessageReaction>builder()
             .code(1000)
             .message("Create message messageReaction successfully")

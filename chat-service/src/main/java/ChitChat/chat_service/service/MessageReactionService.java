@@ -29,19 +29,20 @@ public class MessageReactionService {
     }
 
     // Create Message Reaction
-    public MessageReaction createMessageReaction(Long userId, Long MessageId) {
+    public MessageReaction createMessageReaction(Long userId, Long MessageId, String emoji) {
         UserResponse user = userServiceClient.getUserById(userId).getResult();
         if(user == null) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
 
-        MessageReaction MessageReaction = messageReactionRepository.findByUserIdAndMessageId(userId, MessageId);
-        if (MessageReaction == null) {
-            MessageReaction = new MessageReaction();
-            MessageReaction.setUserId(userId);
-            MessageReaction.setMessage(messageRepository.findById(MessageId).get());
-            MessageReaction.setCreatedAt(LocalDateTime.now());
-            return messageReactionRepository.save(MessageReaction);
+        MessageReaction messageReaction = messageReactionRepository.findByUserIdAndMessageId(userId, MessageId);
+        if (messageReaction == null) {
+            messageReaction = new MessageReaction();
+            messageReaction.setEmoji(emoji);
+            messageReaction.setUserId(userId);
+            messageReaction.setMessage(messageRepository.findById(MessageId).get());
+            messageReaction.setCreatedAt(LocalDateTime.now());
+            return messageReactionRepository.save(messageReaction);
         } else {
             throw new AppException(ErrorCode.ENTITY_EXISTED);
         }

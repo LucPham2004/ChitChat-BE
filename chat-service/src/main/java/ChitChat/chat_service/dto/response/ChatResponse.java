@@ -24,6 +24,7 @@ public class ChatResponse {
     String content;
     String[] publicIds;
     String[] urls;
+    String[] fileNames;
     Long[] heights;
     Long[] widths;
     String[] resourceTypes;

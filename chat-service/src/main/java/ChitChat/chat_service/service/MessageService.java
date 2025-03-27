@@ -79,9 +79,10 @@ public class MessageService {
 
         if (chatRequest.getPublicIds() != null && chatRequest.getUrls() != null &&
             chatRequest.getHeights() != null && chatRequest.getWidths() != null &&
-            chatRequest.getResourceTypes() != null) {
+            chatRequest.getResourceTypes() != null && chatRequest.getFileNames() != null) {
 
             if (chatRequest.getPublicIds().length != chatRequest.getUrls().length
+                || chatRequest.getPublicIds().length != chatRequest.getFileNames().length
                 || chatRequest.getPublicIds().length != chatRequest.getHeights().length
                 || chatRequest.getPublicIds().length != chatRequest.getWidths().length
                 || chatRequest.getPublicIds().length != chatRequest.getResourceTypes().length) {
@@ -94,6 +95,7 @@ public class MessageService {
                 Media media = new Media();
                 media.setPublicId(chatRequest.getPublicIds()[i]);
                 media.setUrl(chatRequest.getUrls()[i]);
+                media.setFileName(chatRequest.getFileNames()[i]);
                 media.setHeight(chatRequest.getHeights()[i]);
                 media.setWidth(chatRequest.getWidths()[i]);
                 media.setResourceType(chatRequest.getResourceTypes()[i]);

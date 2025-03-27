@@ -19,6 +19,7 @@ public class MediaMapper {
 
         response.setPublicId(media.getPublicId());
         response.setUrl(media.getUrl());
+        response.setFileName(media.getFileName());
         response.setHeight(media.getHeight());
         response.setWidth(media.getWidth());
         response.setResourceType(media.getResourceType());

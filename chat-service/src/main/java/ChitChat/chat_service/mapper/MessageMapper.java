@@ -73,6 +73,10 @@ public class MessageMapper {
             String[] urls = medias.stream()
                 .map(Media::getUrl)
                 .toArray(String[]::new);
+            
+            String[] fileNames = medias.stream()
+                .map(Media::getFileName)
+                .toArray(String[]::new);
 
             Long[] heights = medias.stream()
                 .map(Media::getHeight)
@@ -88,6 +92,7 @@ public class MessageMapper {
 
             response.setPublicIds(publicIds);
             response.setUrls(urls);
+            response.setFileNames(fileNames);
             response.setHeights(heights);
             response.setWidths(widths);
             response.setResourceTypes(resourceTypes);

@@ -30,6 +30,8 @@ public class Media {
     
     private String url;
 
+    private String fileName;
+
     private Long height;
 
     private Long width;
