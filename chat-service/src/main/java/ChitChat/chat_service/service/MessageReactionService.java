@@ -1,6 +1,7 @@
 package ChitChat.chat_service.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
@@ -24,38 +25,46 @@ public class MessageReactionService {
     UserServiceClient userServiceClient;
 
     // Get Message Reaction count
-    public int getMessageReactionCount(Long MessageId) {
-        return messageReactionRepository.countByMessageId(MessageId);
+    public int getMessageReactionCount(Long messageId) {
+        return messageReactionRepository.countByMessageId(messageId);
+    }
+
+    public List<MessageReaction> getMessageReactions(Long messageId) {
+        if (!messageRepository.existsById(messageId)) {
+            throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
+        }
+
+        return messageReactionRepository.findByMessageId(messageId);
     }
 
     // Create Message Reaction
-    public MessageReaction createMessageReaction(Long userId, Long MessageId, String emoji) {
+    public MessageReaction createMessageReaction(Long userId, Long messageId, String emoji) {
         UserResponse user = userServiceClient.getUserById(userId).getResult();
         if(user == null) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
 
-        MessageReaction messageReaction = messageReactionRepository.findByUserIdAndMessageId(userId, MessageId);
+        MessageReaction messageReaction = messageReactionRepository.findByUserIdAndMessageId(userId, messageId);
         if (messageReaction == null) {
             messageReaction = new MessageReaction();
             messageReaction.setEmoji(emoji);
             messageReaction.setUserId(userId);
-            messageReaction.setMessage(messageRepository.findById(MessageId).get());
+            messageReaction.setMessage(messageRepository.findById(messageId).get());
             messageReaction.setCreatedAt(LocalDateTime.now());
             return messageReactionRepository.save(messageReaction);
         } else {
-            throw new AppException(ErrorCode.ENTITY_EXISTED);
+            return messageReaction;
         }
     }
 
     // Delete Message Reaction
-    public void deleteMessageReaction(Long userId, Long MessageId) {
+    public void deleteMessageReaction(Long userId, Long messageId) {
         UserResponse user = userServiceClient.getUserById(userId).getResult();
-        if (!messageRepository.existsById(MessageId) || user == null) {
+        if (!messageRepository.existsById(messageId) || user == null) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
 
-        MessageReaction MessageReaction = messageReactionRepository.findByUserIdAndMessageId(userId, MessageId);
+        MessageReaction MessageReaction = messageReactionRepository.findByUserIdAndMessageId(userId, messageId);
         if (MessageReaction != null) {
             messageReactionRepository.delete(MessageReaction);
         } else {

@@ -12,6 +12,7 @@ import ChitChat.chat_service.entity.Media;
 import ChitChat.chat_service.entity.Message;
 import ChitChat.chat_service.entity.MessageStatus;
 import ChitChat.chat_service.repository.ConversationRepository;
+import ChitChat.chat_service.repository.MessageReactionRepository;
 import ChitChat.chat_service.service.UserServiceClient;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level=AccessLevel.PRIVATE, makeFinal = true)
 public class MessageMapper {
     ConversationRepository conversationRepository;
+    MessageReactionRepository messageReactionRepository;
     UserServiceClient userServiceClient;
     
     public Message toMessage(ChatRequest request) {
@@ -63,6 +65,8 @@ public class MessageMapper {
         response.setIsRead(false);
         response.setCreatedAt(message.getCreatedAt());
         response.setUpdatedAt(message.getUpdatedAt());
+
+        response.setReactions(messageReactionRepository.findByMessageId(message.getId()));
 
         Set<Media> medias = message.getMedias();
         if (medias != null && !medias.isEmpty()) {

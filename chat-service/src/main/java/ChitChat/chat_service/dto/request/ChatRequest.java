@@ -1,7 +1,9 @@
 package ChitChat.chat_service.dto.request;
 
+import java.util.List;
 import java.util.Set;
 
+import ChitChat.chat_service.entity.MessageReaction;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,6 +23,8 @@ public class ChatRequest {
     Set<Long> recipientId;
     
     String content;
+    
+    List<MessageReaction> reactions;
 
     String[] publicIds;
     String[] urls;

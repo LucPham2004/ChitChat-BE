@@ -1,5 +1,7 @@
 package ChitChat.chat_service.controller;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +30,18 @@ public class MessageReactionController {
         int messageReactionCount = messageReactionService.getMessageReactionCount(messageId);
         return ApiResponse.<Integer>builder()
             .code(1000)
-            .message("Create message messageReaction successfully")
+            .message("get message messageReaction successfully")
             .result(messageReactionCount)
+            .build();
+    }
+
+    @GetMapping("/get/all/{messageId}")
+    public ApiResponse<List<MessageReaction>> getMessageReactions(@PathVariable Long messageId) {
+        List<MessageReaction> messageReactions = messageReactionService.getMessageReactions(messageId);
+        return ApiResponse.<List<MessageReaction>>builder()
+            .code(1000)
+            .message("get message reactions successfully")
+            .result(messageReactions)
             .build();
     }
     
@@ -42,7 +54,7 @@ public class MessageReactionController {
         MessageReaction messageReaction = messageReactionService.createMessageReaction(userId, messageId, emoji);
         return ApiResponse.<MessageReaction>builder()
             .code(1000)
-            .message("Create message messageReaction successfully")
+            .message("Create message reaction successfully")
             .result(messageReaction)
             .build();
     }
@@ -53,7 +65,7 @@ public class MessageReactionController {
         messageReactionService.deleteMessageReaction(userId, messageId);
         return ApiResponse.<String>builder()
             .code(1000)
-            .message("Delete message messageReaction successfully")
+            .message("Delete message reaction successfully")
             .result("")
             .build();
     }
