@@ -42,6 +42,7 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
                """)
      int countAll();
 
+     Page<User> findByFirstNameContainingOrLastNameContainingIgnoreCase(String firstName, String lastName, Pageable pageable);
 
      // Find User's friends
      @Query("""

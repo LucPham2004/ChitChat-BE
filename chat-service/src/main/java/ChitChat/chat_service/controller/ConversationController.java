@@ -63,6 +63,21 @@ public class ConversationController {
             .build();
     }
     
+    @GetMapping("/search")
+    public ApiResponse<List<ConversationShortResponse>> searchConversations(
+                @RequestParam String keyword,            
+                @RequestParam Long userId, 
+                @RequestParam int pageNum) {
+        List<Conversation> conversations = conversationService.searchConversations(keyword,userId, pageNum);
+        return ApiResponse.<List<ConversationShortResponse>>builder()
+            .code(1000)
+            .message("Get conversations by participant with id: " + userId + " successfully")
+            .result(conversations.stream()
+                .map(conv -> conversationMapper.toConversationShortResponse(conv, userId))
+                .toList())
+            .build();
+    }
+    
     @GetMapping("/get/direct-message/{selfId}/{otherId}")
     public ApiResponse<ConversationResponse> getDirectMessage(@PathVariable Long selfId, @PathVariable Long otherId) {
         Conversation conversation = conversationService.getDirectMessage(selfId, otherId);

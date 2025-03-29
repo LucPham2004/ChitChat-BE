@@ -33,6 +33,16 @@ public class MessageController {
     
     // Get messages
 
+    @GetMapping("/get/{id}")
+    public ApiResponse<ChatResponse> getMessageById(@PathVariable Long id) {
+        Message message = service.getMessage(id);
+        return ApiResponse.<ChatResponse>builder()
+            .code(1000)
+            .message("Get message with id: " + id + " successfully")
+            .result(chatMapper.toResponse(message))
+            .build();
+    }
+
     @GetMapping("/get/conversation")
     public ApiResponse<Page<ChatResponse>> getConversationMessages(
                 @RequestParam Long conversationId,
@@ -45,7 +55,7 @@ public class MessageController {
             .build();
     }
 
-    @GetMapping("/get")
+    @GetMapping("/get/user")
     public ApiResponse<Page<ChatResponse>> getUserMessages(
                 @RequestParam Long senderId,
                 @RequestParam int pageNum) {
@@ -57,20 +67,21 @@ public class MessageController {
             .build();
     }
 
-    // Send message
-    // @PutMapping("/send")
-    // public ApiResponse<ChatResponse> sendMessage(
-    //             @RequestParam Long senderId,
-    //             @RequestParam Long receiverId,
-    //             @RequestParam String content) {
-    //     Message message = service.sendMessage(senderId, receiverId, content);
-    //     return ApiResponse.<ChatResponse>builder()
-    //         .code(1000)
-    //         .message("Send message successfully!")
-    //         .result(chatMapper.toResponse(message))
-    //         .build();
-    // }
+    // Search messages by keyword in a conversation
+    @GetMapping("/search")
+    public ApiResponse<Page<ChatResponse>> findMessagesByKeyword(
+                @RequestParam Long conversationId,
+                @RequestParam String keyword,
+                @RequestParam int pageNum) {
+        Page<Message> messages = service.findMessagesByKeyword(conversationId, keyword, pageNum);
+        return ApiResponse.<Page<ChatResponse>>builder()
+            .code(1000)
+            .message("Get messages with keyword: " + keyword + " in conversation with id: " + conversationId + " successfully")
+            .result(messages.map(chatMapper::toResponse))
+            .build();
+    }
 
+    // Send message
     @MessageMapping("/chat.sendMessage")
     @SendTo("/topic")
     public ApiResponse<Void> sendMessage(@Payload ChatRequest request) {

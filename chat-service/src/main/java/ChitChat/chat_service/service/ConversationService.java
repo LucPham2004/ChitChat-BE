@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ChitChat.chat_service.dto.request.ConversationRequest;
 import ChitChat.chat_service.dto.response.ChatParticipants;
@@ -80,6 +81,35 @@ public class ConversationService {
 
         return conversationRepository.findByOwnerId(userId, pageable);
     }
+
+    // Search conversations by name or participant names
+    public List<Conversation> searchConversations(String keyword, Long userId, int pageNum) {
+        Pageable pageable = PageRequest.of(pageNum, CONVERSATIONS_PER_PAGE);
+        
+        // Search conversations by name
+        List<Conversation> conversations = conversationRepository
+            .findByParticipantIdsContainingAndNameContainingIgnoreCase(userId, keyword, pageable)
+            .getContent();
+        
+        // Search user ids by name
+        ResponseEntity<List<Long>> response = userServiceClient.searchUserIds(keyword, pageNum);
+    
+        List<Long> userIds = response.getBody();
+        if (userIds != null && !userIds.isEmpty()) {
+            // Find conversations have participants
+            List<Conversation> byParticipants = conversationRepository
+                .findByParticipantIdsContaining(userId, pageable)
+                .getContent();
+    
+            // Combine to Set, remove duplicate
+            Set<Conversation> resultSet = new HashSet<>(conversations);
+            resultSet.addAll(byParticipants);
+    
+            return new ArrayList<>(resultSet);
+        }
+    
+        return conversations;
+    }    
 
     public List<ChatParticipants> getParticipantsByConvId(Long conversationId) {
         Conversation conversation = conversationRepository.findById(conversationId)

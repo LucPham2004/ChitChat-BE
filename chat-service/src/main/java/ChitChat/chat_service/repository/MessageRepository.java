@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import ChitChat.chat_service.entity.Message;
@@ -24,6 +25,11 @@ public interface MessageRepository extends PagingAndSortingRepository<Message, L
     Page<Message> findByConversationId(Long conversationId, Pageable pageable);
 
     Page<Message> findBySenderId(Long senderId, Pageable pageable);
+
+    // Search messages by keyword in a conversation
+    @Query(value = "SELECT * FROM messages WHERE conversation_id = :conversationId AND LOWER(content) LIKE LOWER(CONCAT('%', :contentKeyword, '%'))", 
+        nativeQuery = true)
+    Page<Message> findByConversationIdAndContentContainingIgnoreCase(@Param("conversationId") Long conversationId, @Param("contentKeyword") String contentKeyword, Pageable pageable);
 
     int countBySenderId(Long senderId);
 

@@ -42,6 +42,10 @@ public interface ConversationRepository extends PagingAndSortingRepository<Conve
 
     @Query("SELECT c FROM Conversation c WHERE :userId MEMBER OF c.participantIds")
     Page<Conversation> findByParticipantIdsContaining(@Param("userId") Long userId, Pageable pageable);
+
+    // Search conversations
+	@Query("SELECT c FROM Conversation c WHERE :userId MEMBER OF c.participantIds AND LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    Page<Conversation> findByParticipantIdsContainingAndNameContainingIgnoreCase(@Param("userId") Long userId, String keyword, Pageable pageable);
     
     Page<Conversation> findByOwnerId(Long userId, Pageable pageable);
 

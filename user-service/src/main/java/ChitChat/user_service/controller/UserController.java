@@ -1,6 +1,9 @@
 package ChitChat.user_service.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -180,6 +183,29 @@ public class UserController {
                                 .message("Get suggested friends of the user with ID " + userId + " successfully!")
                                 .result(friends)
                                 .build();
+        }
+
+        
+        // Get User's friends
+        @GetMapping("/search/name")
+        public ApiResponse<Page<UserDTO>> searchUsersByName(
+                        @RequestParam Long userId,
+                        @RequestParam String name,
+                        @RequestParam(defaultValue = "0") int pageNum) {
+                var friends = this.userService.searchUsersByName(userId, name, pageNum);
+                return ApiResponse.<Page<UserDTO>>builder()
+                                .code(1000)
+                                .message("Search users with keyword: " + name + " successfully!")
+                                .result(friends)
+                                .build();
+        }
+
+        @GetMapping("/search-ids")
+        public ResponseEntity<List<Long>> searchUserIds(
+                        @RequestParam String name, 
+                        @RequestParam(defaultValue = "0") int pageNum) {
+                List<Long> userIds = userService.searchUserIds(name, pageNum);
+                return ResponseEntity.ok(userIds);
         }
 
         // PUT

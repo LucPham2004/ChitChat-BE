@@ -68,6 +68,16 @@ public class MessageService {
         return messageRepository.findBySenderId(senderId, pageable);
     }
 
+    // Search messages by keyword in a conversation
+    public Page<Message> findMessagesByKeyword(Long conversationId, String keyword, int pageNum) {
+        if(!conversationRepository.existsById(conversationId)) {
+            throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
+        }
+        Pageable pageable = PageRequest.of(pageNum, MESSAGES_PER_PAGE);
+
+        return messageRepository.findByConversationIdAndContentContainingIgnoreCase(conversationId, keyword, pageable);
+    }
+
     // Send Message
     public void sendMessage(ChatRequest chatRequest) {
         Conversation conversation = conversationRepository.findById(chatRequest.getConversationId()).get();
