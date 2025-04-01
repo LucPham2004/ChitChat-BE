@@ -47,12 +47,35 @@ public class MediaController {
             .build();
     }
 
-    
     @GetMapping("/get/conversation")
-    public ApiResponse<Page<MediaResponse>> getMediaByConversationId(
+    public ApiResponse<Page<MediaResponse>> getMediasAndFilesByConversationId(
                 @RequestParam Long conversationId, 
                 @RequestParam int pageNum) {
-        Page<Media> medias = mediaService.getMediaByConversationId(conversationId, pageNum);
+        Page<Media> medias = mediaService.getMediasAndFilesByConversationId(conversationId, pageNum);
+        return ApiResponse.<Page<MediaResponse>>builder()
+            .code(1000)
+            .message("Get medias by message with id: " + conversationId + " successfully")
+            .result(medias.map(media -> mediaMapper.toResponse(media)))
+            .build();
+    }
+    
+    @GetMapping("/get/conversation/media")
+    public ApiResponse<Page<MediaResponse>> getMediasByConversationId(
+                @RequestParam Long conversationId, 
+                @RequestParam int pageNum) {
+        Page<Media> medias = mediaService.getMediasByConversationId(conversationId, pageNum);
+        return ApiResponse.<Page<MediaResponse>>builder()
+            .code(1000)
+            .message("Get medias by message with id: " + conversationId + " successfully")
+            .result(medias.map(media -> mediaMapper.toResponse(media)))
+            .build();
+    }
+    
+    @GetMapping("/get/conversation/raw")
+    public ApiResponse<Page<MediaResponse>> getRawFilesByConversationId(
+                @RequestParam Long conversationId, 
+                @RequestParam int pageNum) {
+        Page<Media> medias = mediaService.getRawFilesByConversationId(conversationId, pageNum);
         return ApiResponse.<Page<MediaResponse>>builder()
             .code(1000)
             .message("Get medias by message with id: " + conversationId + " successfully")

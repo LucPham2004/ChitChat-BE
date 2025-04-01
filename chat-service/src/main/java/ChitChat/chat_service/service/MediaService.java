@@ -52,12 +52,30 @@ public class MediaService {
         return mediaRepository.findByMessageId(messageId, pageable);
     }
     
-    public Page<Media> getMediaByConversationId(Long conversationId, int pageNum) {
+    public Page<Media> getMediasAndFilesByConversationId(Long conversationId, int pageNum) {
         if (!conversationRepository.existsById(conversationId)) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
         Pageable pageable = PageRequest.of(pageNum, MEDIAS_PER_PAGE, Sort.by(Sort.Direction.DESC, "createdAt"));
 
         return mediaRepository.findByConversationId(conversationId, pageable);
+    }
+    
+    public Page<Media> getMediasByConversationId(Long conversationId, int pageNum) {
+        if (!conversationRepository.existsById(conversationId)) {
+            throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
+        }
+        Pageable pageable = PageRequest.of(pageNum, MEDIAS_PER_PAGE, Sort.by(Sort.Direction.DESC, "createdAt"));
+        String type = "image";
+        return mediaRepository.findByConversationIdAndResourceType(conversationId, type, pageable);
+    }
+    
+    public Page<Media> getRawFilesByConversationId(Long conversationId, int pageNum) {
+        if (!conversationRepository.existsById(conversationId)) {
+            throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
+        }
+        Pageable pageable = PageRequest.of(pageNum, MEDIAS_PER_PAGE, Sort.by(Sort.Direction.DESC, "createdAt"));
+        String type = "raw";
+        return mediaRepository.findByConversationIdAndResourceType(conversationId, type, pageable);
     }
 }
