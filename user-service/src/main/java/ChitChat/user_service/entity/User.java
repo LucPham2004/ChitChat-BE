@@ -74,6 +74,16 @@ public class User {
     @Column(name = "cover_photo_url")
     private String coverPhotoUrl;
 
+    // social media links
+    private String facebook;
+    private String twitter;
+    private String instagram;
+    private String linkedin;
+    private String youtube;
+    private String github;
+    private String tiktok;
+    private String discord;
+
     private String createdBy;
 
     private String updatedBy;

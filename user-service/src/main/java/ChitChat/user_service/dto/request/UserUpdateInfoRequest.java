@@ -3,7 +3,7 @@ package ChitChat.user_service.dto.request;
 import lombok.Data;
 
 @Data
-public class UserUpdateRequest {
+public class UserUpdateInfoRequest {
     private Long id;
     
     private String email;

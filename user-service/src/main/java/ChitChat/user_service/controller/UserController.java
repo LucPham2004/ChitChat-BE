@@ -15,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ChitChat.user_service.dto.request.UserCreationRequest;
-import ChitChat.user_service.dto.request.UserImageUpdateReq;
+import ChitChat.user_service.dto.request.UserUpdateImageRequest;
 import ChitChat.user_service.dto.request.UserUpdateOtpRequest;
-import ChitChat.user_service.dto.request.UserUpdateRequest;
+import ChitChat.user_service.dto.request.UserUpdateInfoRequest;
+import ChitChat.user_service.dto.request.UserUpdateLinksRequest;
 import ChitChat.user_service.dto.response.ApiResponse;
 import ChitChat.user_service.dto.response.UserAuthResponse;
 import ChitChat.user_service.dto.response.UserDTO;
@@ -210,7 +211,7 @@ public class UserController {
 
         // PUT
         @PutMapping("/update")
-        public ApiResponse<UserResponse> updateUser(@RequestBody UserUpdateRequest reqUser) {
+        public ApiResponse<UserResponse> updateUser(@RequestBody UserUpdateInfoRequest reqUser) {
                 var user = this.userService.updateUser(reqUser);
 
                 return ApiResponse.<UserResponse>builder()
@@ -221,12 +222,23 @@ public class UserController {
         }
 
         @PutMapping("/update/images")
-        public ApiResponse<UserResponse> updateUserImages(@RequestBody UserImageUpdateReq reqUser) {
+        public ApiResponse<UserResponse> updateUserImages(@RequestBody UserUpdateImageRequest reqUser) {
                 var user = this.userService.updateUserImages(reqUser);
 
                 return ApiResponse.<UserResponse>builder()
                                 .code(1000)
                                 .message("Update user images with ID " + reqUser.getId() + " successfully")
+                                .result(userMapper.toUserResponse(user))
+                                .build();
+        }
+
+        @PutMapping("/update/links")
+        public ApiResponse<UserResponse> updateUserLinks(@RequestBody UserUpdateLinksRequest reqUser) {
+                var user = this.userService.updateUserLinks(reqUser);
+
+                return ApiResponse.<UserResponse>builder()
+                                .code(1000)
+                                .message("Update user social links with ID " + reqUser.getId() + " successfully")
                                 .result(userMapper.toUserResponse(user))
                                 .build();
         }

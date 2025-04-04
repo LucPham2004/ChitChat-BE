@@ -18,9 +18,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ChitChat.user_service.dto.request.UserCreationRequest;
-import ChitChat.user_service.dto.request.UserImageUpdateReq;
+import ChitChat.user_service.dto.request.UserUpdateImageRequest;
 import ChitChat.user_service.dto.request.UserUpdateOtpRequest;
-import ChitChat.user_service.dto.request.UserUpdateRequest;
+import ChitChat.user_service.dto.request.UserUpdateInfoRequest;
+import ChitChat.user_service.dto.request.UserUpdateLinksRequest;
 import ChitChat.user_service.dto.response.UserDTO;
 import ChitChat.user_service.entity.Friendship;
 import ChitChat.user_service.entity.User;
@@ -169,7 +170,7 @@ public class UserService {
     // PUT
     // Edit user info
     @Transactional
-    public User updateUser(UserUpdateRequest reqUser) {
+    public User updateUser(UserUpdateInfoRequest reqUser) {
         User dbUser = this.findById(reqUser.getId()).get();
 
         if (reqUser.getFirstName() != null && !reqUser.getFirstName().isEmpty()
@@ -212,7 +213,7 @@ public class UserService {
 
     // Update user avatar and cover photo
     @Transactional
-    public User updateUserImages(UserImageUpdateReq reqUser) {
+    public User updateUserImages(UserUpdateImageRequest reqUser) {
         User dbUser = this.findById(reqUser.getId()).get();
         
         if (reqUser.getAvatarPublicId() != null && !reqUser.getAvatarPublicId().isEmpty()
@@ -233,6 +234,54 @@ public class UserService {
         if (reqUser.getCoverPhotoUrl() != null && !reqUser.getCoverPhotoUrl().isEmpty()
                 && !reqUser.getCoverPhotoUrl().equals(dbUser.getCoverPhotoUrl())) {
             dbUser.setCoverPhotoUrl(reqUser.getCoverPhotoUrl());
+        }
+
+        return this.userRepository.save(dbUser);
+    }
+    
+    // Update user avatar and cover photo
+    @Transactional
+    public User updateUserLinks(UserUpdateLinksRequest reqUser) {
+        User dbUser = this.findById(reqUser.getId()).get();
+        
+        if (reqUser.getFacebook() != null && !reqUser.getFacebook().isEmpty()
+                && !reqUser.getFacebook().equals(dbUser.getFacebook())) {
+            dbUser.setFacebook(reqUser.getFacebook());
+        }
+
+        if (reqUser.getTwitter() != null && !reqUser.getTwitter().isEmpty()
+                && !reqUser.getTwitter().equals(dbUser.getTwitter())) {
+            dbUser.setTwitter(reqUser.getTwitter());
+        }
+        
+        if (reqUser.getInstagram() != null && !reqUser.getInstagram().isEmpty()
+                && !reqUser.getInstagram().equals(dbUser.getInstagram())) {
+            dbUser.setInstagram(reqUser.getInstagram());
+        }
+
+        if (reqUser.getLinkedin() != null && !reqUser.getLinkedin().isEmpty()
+                && !reqUser.getLinkedin().equals(dbUser.getLinkedin())) {
+            dbUser.setLinkedin(reqUser.getLinkedin());
+        }
+        
+        if (reqUser.getYoutube() != null && !reqUser.getYoutube().isEmpty()
+                && !reqUser.getYoutube().equals(dbUser.getYoutube())) {
+            dbUser.setYoutube(reqUser.getYoutube());
+        }
+
+        if (reqUser.getGithub() != null && !reqUser.getGithub().isEmpty()
+                && !reqUser.getGithub().equals(dbUser.getGithub())) {
+            dbUser.setGithub(reqUser.getGithub());
+        }
+        
+        if (reqUser.getTiktok() != null && !reqUser.getTiktok().isEmpty()
+                && !reqUser.getTiktok().equals(dbUser.getTiktok())) {
+            dbUser.setTiktok(reqUser.getTiktok());
+        }
+
+        if (reqUser.getDiscord() != null && !reqUser.getDiscord().isEmpty()
+                && !reqUser.getDiscord().equals(dbUser.getDiscord())) {
+            dbUser.setDiscord(reqUser.getDiscord());
         }
 
         return this.userRepository.save(dbUser);

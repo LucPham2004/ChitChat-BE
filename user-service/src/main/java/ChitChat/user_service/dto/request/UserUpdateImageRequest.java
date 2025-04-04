@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserImageUpdateReq {
+public class UserUpdateImageRequest {
 
     private Long id;
     private String avatarPublicId;

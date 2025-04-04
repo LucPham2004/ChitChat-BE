@@ -36,6 +36,16 @@ public class UserResponse {
 
      Long conversationId;
 
+     // social media links
+     String facebook;
+     String twitter;
+     String instagram;
+     String linkedin;
+     String youtube;
+     String github;
+     String tiktok;
+     String discord;
+
      LocalDate dob;
      Instant createdAt;
      Instant updatedAt;

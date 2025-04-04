@@ -45,13 +45,16 @@ public class UserMapper {
         userResponse.setUsername(user.getUsername());
         userResponse.setEmail(user.getEmail());
         userResponse.setAuthorities(user.getAuthorities());
+
         userResponse.setFirstName(user.getFirstName());
         userResponse.setLastName(user.getLastName());
         userResponse.setPhone(user.getPhone());
+
         userResponse.setAvatarUrl(user.getAvatarUrl() != null ? user.getAvatarUrl() : "/user_default.avif");
         userResponse.setAvatarPublicId(user.getAvatarPublicId());
         userResponse.setCoverPhotoUrl(user.getCoverPhotoUrl() != null ? user.getCoverPhotoUrl() : "https://images.unsplash.com/photo-1501594907352-04cda38ebc29");
         userResponse.setCoverPhotoPublicId(user.getCoverPhotoPublicId());
+        
         userResponse.setBio(user.getBio());
         userResponse.setLocation(user.getLocation());
         userResponse.setJob(user.getJob());
@@ -60,6 +63,15 @@ public class UserMapper {
         userResponse.setUpdatedAt(user.getUpdatedAt());
         userResponse.setGender(user.getGender());
         userResponse.setFriendNum(userRepository.countFriends(user.getId()));
+
+        userResponse.setFacebook(user.getFacebook());
+        userResponse.setTwitter(user.getTwitter());
+        userResponse.setInstagram(user.getInstagram());
+        userResponse.setLinkedin(user.getLinkedin());
+        userResponse.setYoutube(user.getYoutube());
+        userResponse.setGithub(user.getGithub());
+        userResponse.setTiktok(user.getTiktok());
+        userResponse.setDiscord(user.getDiscord());
 
         return userResponse;
     }
