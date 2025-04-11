@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: gateway
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          secret: MjbO8FU02FSIXzP8FwYoz5H7fxPWoXMPxyKjDBBMAYA=
   cloud:
     gateway:
       globalcors:
@@ -52,3 +57,15 @@ spring:
             - Path=/notification-service/**
           filters:
             - RewritePath=/notification-service/(?<path>.*), /$\{path}
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web.reactive.function.client: DEBUG
+    reactor.netty.http.client: DEBUG
+
+
+chitchat:
+  jwt:
+    base64-secret: MjbO8FU02FSIXzP8FwYoz5H7fxPWoXMPxyKjDBBMAYA=
+    access-token-validity-in-seconds: 86400
+    refresh-token-validity-in-seconds: 86400

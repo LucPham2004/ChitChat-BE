@@ -8,13 +8,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import ChitChat.auth_service.configuration.FeignNoAuthConfig;
 import ChitChat.auth_service.dto.request.UserCreationRequest;
 import ChitChat.auth_service.dto.request.UserUpdateOtpRequest;
 import ChitChat.auth_service.dto.response.ApiResponse;
 import ChitChat.auth_service.dto.response.UserAuthResponse;
 import ChitChat.auth_service.dto.response.UserResponse;
 
-@FeignClient(name = "user-service", url = "http://gateway:8888/user-service/users") //"http://localhost:8888/user-service" gateway
+@FeignClient(
+        name = "user-service", 
+        url = "http://gateway:8888/user-service/users", //"http://localhost:8888/user-service" gateway
+        configuration = FeignNoAuthConfig.class
+)
 public interface UserServiceClient {
 
     // Get Methods
