@@ -119,9 +119,10 @@ public class MessageService {
             message.setMedias(medias);
             conversation.setMedias(medias);
             messageRepository.save(message);
+            conversationRepository.save(conversation);
         }
-        
-        conversationRepository.save(conversation);
+
+        chatRequest.setId(message.getId());
         
         template.convertAndSend("/topic/conversation/" + chatRequest.getConversationId(), chatRequest);
     }

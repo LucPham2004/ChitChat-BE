@@ -19,7 +19,7 @@ public interface FriendshipRepository extends PagingAndSortingRepository<Friends
     boolean existsById(Long id);
 
     @Query("""
-           SELECT f FROM  Friendship f 
+           SELECT f FROM  Friendship f
            WHERE ((f.sender.id = :senderId AND f.recipient.id = :receiverId) OR
                 (f.sender.id = :receiverId AND f.recipient.id = :senderId))
            """)

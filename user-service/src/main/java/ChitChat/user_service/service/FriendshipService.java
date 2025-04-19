@@ -27,9 +27,8 @@ public class FriendshipService {
         if (!userRepository.existsById(requesterId) || !userRepository.existsById(receiverId)) {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
-        Friendship friendship = friendShipRepository.findBy2UserIds(requesterId, receiverId);
 
-        return friendship;
+        return friendShipRepository.findBy2UserIds(requesterId, receiverId);
     }
 
     public Friendship sendFriendRequest(Long requesterId, Long receiverId) {

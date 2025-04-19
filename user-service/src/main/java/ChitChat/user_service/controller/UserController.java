@@ -1,7 +1,11 @@
 package ChitChat.user_service.controller;
 
 import java.util.List;
+import java.util.Objects;
 
+import ChitChat.user_service.entity.Friendship;
+import ChitChat.user_service.enums.FriendshipStatus;
+import ChitChat.user_service.repository.FriendshipRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,6 +40,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
         private final UserService userService;
         private final UserMapper userMapper;
+        private final FriendshipRepository friendshipRepository;
         private final ConversationServiceClient conversationServiceClient;
 
         // POST
@@ -77,7 +82,18 @@ public class UserController {
                         @RequestParam Long otherId) {
                 var dbUser = this.userService.getUser(otherId);
                 UserResponse userResponse = userMapper.toUserResponse(dbUser);
+
+                if(!Objects.equals(selfId, otherId)) {
+                        Friendship friendship = friendshipRepository.findBy2UserIds(selfId, otherId);
+                        if(friendship != null) {
+                                userResponse.setFriend(friendship.getStatus() == FriendshipStatus.Accepted);
+                        } else {
+                                userResponse.setFriend(false);
+                        }
+                }
+
                 userResponse.setConversationId(conversationServiceClient.getDirectMessageId(selfId, otherId).getResult());
+
                 return ApiResponse.<UserResponse>builder()
                                 .code(1000)
                                 .message("Get user with ID " + otherId + " successfully!")
@@ -272,7 +288,7 @@ public class UserController {
                 return ApiResponse.<Boolean>builder()
                                 .code(1000)
                                 .message("Create user successfully!")
-                                .result(isVerified)
+                                .result(Boolean.valueOf(isVerified))
                                 .build();
         }
 }

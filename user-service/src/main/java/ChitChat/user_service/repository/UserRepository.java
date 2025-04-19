@@ -90,9 +90,10 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
      @Query("""
                SELECT u FROM User u
                WHERE u.id != :userId
+                    AND u.username != 'ADMIN'
                     AND NOT EXISTS (
                     SELECT f FROM Friendship f
-                    WHERE 
+                    WHERE
                          (
                               (f.sender.id = :userId AND f.recipient.id = u.id)
                               OR (f.recipient.id = :userId AND f.sender.id = u.id)
@@ -101,7 +102,7 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long> {
                     )
                     AND NOT EXISTS (
                     SELECT f FROM Friendship f
-                    WHERE 
+                    WHERE
                          f.sender.id = u.id AND f.recipient.id = :userId
                          AND f.status = 'Pending'
                     )

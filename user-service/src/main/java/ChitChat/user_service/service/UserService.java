@@ -3,6 +3,7 @@ package ChitChat.user_service.service;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -199,8 +200,11 @@ public class UserService {
             dbUser.setJob(reqUser.getJob());
         }
 
-        if (reqUser.getDob() != null && !LocalDate.parse(reqUser.getDob()).equals(dbUser.getDob())) {
-            dbUser.setDob(LocalDate.parse(reqUser.getDob()));
+        if (reqUser.getDob() != null) {
+            LocalDate parsedDate = OffsetDateTime.parse(reqUser.getDob()).toLocalDate();
+            if (!parsedDate.equals(dbUser.getDob())) {
+                dbUser.setDob(parsedDate);
+            }
         }
 
         if (reqUser.getLocation() != null && !reqUser.getLocation().isEmpty()

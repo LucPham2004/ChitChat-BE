@@ -52,6 +52,8 @@ public class UserResponse {
      
      Gender gender;
 
+     boolean isFriend;
+
      int friendNum;
      Long mutualFriendsNum;
 }
