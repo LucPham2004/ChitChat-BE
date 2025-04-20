@@ -1,5 +1,6 @@
 package ChitChat.chat_service.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -43,8 +44,11 @@ public interface ConversationRepository extends PagingAndSortingRepository<Conve
     @Query("SELECT c FROM Conversation c WHERE :userId MEMBER OF c.participantIds")
     Page<Conversation> findByParticipantIdsContaining(@Param("userId") Long userId, Pageable pageable);
 
+    @Query("SELECT c FROM Conversation c WHERE :userId MEMBER OF c.participantIds AND EXISTS (SELECT id FROM c.participantIds pid WHERE pid IN :targetUserIds)")
+    Page<Conversation> findByParticipantIdsContainingAndParticipantIn(@Param("userId") Long userId, @Param("targetUserIds") List<Long> targetUserIds, Pageable pageable);
+
     // Search conversations
-	@Query("SELECT c FROM Conversation c WHERE :userId MEMBER OF c.participantIds AND LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    @Query("SELECT c FROM Conversation c WHERE :userId MEMBER OF c.participantIds AND c.name IS NOT NULL AND LOWER(c.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Conversation> findByParticipantIdsContainingAndNameContainingIgnoreCase(@Param("userId") Long userId, String keyword, Pageable pageable);
     
     Page<Conversation> findByOwnerId(Long userId, Pageable pageable);

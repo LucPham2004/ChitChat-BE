@@ -57,11 +57,6 @@ spring:
             - Path=/notification-service/**
           filters:
             - RewritePath=/notification-service/(?<path>.*), /$\{path}
-logging:
-  level:
-    org.springframework.security: DEBUG
-    org.springframework.web.reactive.function.client: DEBUG
-    reactor.netty.http.client: DEBUG
 
 
 chitchat:

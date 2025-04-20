@@ -66,8 +66,8 @@ public class MediaService {
             throw new AppException(ErrorCode.ENTITY_NOT_EXISTED);
         }
         Pageable pageable = PageRequest.of(pageNum, MEDIAS_PER_PAGE, Sort.by(Sort.Direction.DESC, "createdAt"));
-        String type = "image";
-        return mediaRepository.findByConversationIdAndResourceType(conversationId, type, pageable);
+        String type = "raw";
+        return mediaRepository.findByConversationIdAndResourceTypeNot(conversationId, type, pageable);
     }
     
     public Page<Media> getRawFilesByConversationId(Long conversationId, int pageNum) {

@@ -110,7 +110,7 @@ public class UserService {
     public Page<UserDTO> searchUsersByName(Long userId, String name, int pageNum) {
         Pageable pageable = PageRequest.of(pageNum, USERS_PER_PAGE);
 
-        Page<User> users = userRepository.findByFirstNameContainingOrLastNameContainingIgnoreCase(name, name, pageable);
+        Page<User> users = userRepository.searchByAnyName(name, pageable);
 
         return getUsersWithMutualFriendsCount(userId, users);
     }
@@ -119,9 +119,8 @@ public class UserService {
     public List<Long> searchUserIds(String name, int pageNum) {
         Pageable pageable = PageRequest.of(pageNum, USERS_PER_PAGE);
 
-        Page<User> users = userRepository.findByFirstNameContainingOrLastNameContainingIgnoreCase(name, name, pageable);
-        List<Long> userIds = users.stream().map(User::getId).collect(Collectors.toList());
-        return userIds;
+        Page<User> users = userRepository.searchByAnyName(name, pageable);
+        return users.stream().map(User::getId).collect(Collectors.toList());
     }
 
     // Get User by Id

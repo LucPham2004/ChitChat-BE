@@ -85,31 +85,29 @@ public class ConversationService {
     // Search conversations by name or participant names
     public List<Conversation> searchConversations(String keyword, Long userId, int pageNum) {
         Pageable pageable = PageRequest.of(pageNum, CONVERSATIONS_PER_PAGE);
-        
-        // Search conversations by name
-        List<Conversation> conversations = conversationRepository
-            .findByParticipantIdsContainingAndNameContainingIgnoreCase(userId, keyword, pageable)
-            .getContent();
-        
-        // Search user ids by name
-        ResponseEntity<List<Long>> response = userServiceClient.searchUserIds(keyword, pageNum);
-    
-        List<Long> userIds = response.getBody();
-        if (userIds != null && !userIds.isEmpty()) {
-            // Find conversations have participants
-            List<Conversation> byParticipants = conversationRepository
-                .findByParticipantIdsContaining(userId, pageable)
+
+        // Find conversations by name (not null)
+        List<Conversation> byName = conversationRepository
+                .findByParticipantIdsContainingAndNameContainingIgnoreCase(userId, keyword, pageable)
                 .getContent();
-    
-            // Combine to Set, remove duplicate
-            Set<Conversation> resultSet = new HashSet<>(conversations);
-            resultSet.addAll(byParticipants);
-    
-            return new ArrayList<>(resultSet);
+
+        // Search users by keyword
+        ResponseEntity<List<Long>> response = userServiceClient.searchUserIds(keyword, pageNum);
+        List<Long> userIds = response.getBody();
+
+        List<Conversation> byParticipants = new ArrayList<>();
+
+        if (userIds != null && !userIds.isEmpty()) {
+            byParticipants = conversationRepository
+                    .findByParticipantIdsContainingAndParticipantIn(userId, userIds, pageable)
+                    .getContent();
         }
-    
-        return conversations;
-    }    
+
+        Set<Conversation> resultSet = new HashSet<>(byName);
+        resultSet.addAll(byParticipants);
+        return new ArrayList<>(resultSet);
+    }
+
 
     public List<ChatParticipants> getParticipantsByConvId(Long conversationId) {
         Conversation conversation = conversationRepository.findById(conversationId)
